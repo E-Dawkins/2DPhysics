@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "2DPhysics_Lib.h"
 
 void Draw();
 
@@ -6,6 +7,8 @@ int main()
 {
     InitWindow(800, 500, "2D Physics Example");
     SetTargetFPS(60);
+
+    PrintTest();
 
     while (!WindowShouldClose())
     {

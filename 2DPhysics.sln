@@ -1,8 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34009.444
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_Example", "2DPhysics_Example\2DPhysics_Example.vcxproj", "{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_Lib", "2DPhysics_Lib\2DPhysics_Lib.vcxproj", "{38E798B3-10E8-4AFE-B672-D7C132D88C56}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_Lib", "2DPhysics_Lib\2DPhysics_Lib.vcxproj", "{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,13 +23,19 @@ Global
 		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|Win32.Build.0 = Release|Win32
 		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|x64.ActiveCfg = Release|x64
 		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|x64.Build.0 = Release|x64
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|Win32.ActiveCfg = Debug|Win32
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|Win32.Build.0 = Debug|Win32
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|x64.ActiveCfg = Debug|x64
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|x64.Build.0 = Debug|x64
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|Win32.ActiveCfg = Release|Win32
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|Win32.Build.0 = Release|Win32
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|x64.ActiveCfg = Release|x64
-		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|x64.Build.0 = Release|x64
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Debug|Win32.Build.0 = Debug|Win32
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Debug|x64.ActiveCfg = Debug|x64
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Debug|x64.Build.0 = Debug|x64
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Release|Win32.ActiveCfg = Release|Win32
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Release|Win32.Build.0 = Release|Win32
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Release|x64.ActiveCfg = Release|x64
+		{E11512C7-AEEA-4DB9-AB77-020ED8D6C54E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {580F53EC-0F41-4F01-B5F9-2F77E90060E9}
 	EndGlobalSection
 EndGlobal
