@@ -5,6 +5,3 @@
 #else
 #define PHYSICS_API __declspec(dllimport)
 #endif
-
-
-PHYSICS_API void PrintTest();
