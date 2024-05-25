@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_Example", "2DPhysics_Example\2DPhysics_Example.vcxproj", "{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2DPhysics_Lib", "2DPhysics_Lib\2DPhysics_Lib.vcxproj", "{38E798B3-10E8-4AFE-B672-D7C132D88C56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Debug|Win32.Build.0 = Debug|Win32
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Debug|x64.ActiveCfg = Debug|x64
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Debug|x64.Build.0 = Debug|x64
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|Win32.ActiveCfg = Release|Win32
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|Win32.Build.0 = Release|Win32
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|x64.ActiveCfg = Release|x64
+		{36B14C33-E1DB-431E-9A5B-A87A43FDB7F2}.Release|x64.Build.0 = Release|x64
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|Win32.ActiveCfg = Debug|Win32
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|Win32.Build.0 = Debug|Win32
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|x64.ActiveCfg = Debug|x64
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Debug|x64.Build.0 = Debug|x64
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|Win32.ActiveCfg = Release|Win32
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|Win32.Build.0 = Release|Win32
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|x64.ActiveCfg = Release|x64
+		{38E798B3-10E8-4AFE-B672-D7C132D88C56}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+EndGlobal
