@@ -43,7 +43,7 @@ void Update(float _deltaSeconds)
     
     if (circle1->CheckCollision(circle2))
     {
-        std::cout << "Colliding!" << std::endl;
+        std::cout << "Colliding! Penetration: " << circle1->GetCollisionInfo().minPenetration << std::endl;
     }
 }
 
