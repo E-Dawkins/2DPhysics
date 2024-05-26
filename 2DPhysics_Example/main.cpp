@@ -1,5 +1,5 @@
 #include "raylib.h"
-#include "Vector2D.h"
+#include "PhysicsObject.h"
 
 #include <iostream>
 
@@ -28,11 +28,11 @@ int main()
 
 void Update(float _deltaSeconds)
 {
-    static Vector2D pos(10, 20);
-    pos.X += _deltaSeconds * 5;
-    pos.Y += _deltaSeconds * 10;
+    static PhysicsObject obj = PhysicsObject(Vector2D(10, 20), 10);
+    obj.SetVelocity(Vector2D(5, 10));
+    obj.Update(_deltaSeconds);
 
-    std::cout << pos.X << ", " << pos.Y << std::endl;
+    std::cout << obj.GetPosition().X << ", " << obj.GetPosition().Y << std::endl;
 }
 
 void Draw()

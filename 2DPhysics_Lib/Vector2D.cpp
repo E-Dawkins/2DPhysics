@@ -12,7 +12,7 @@ Vector2D::Vector2D(float _x, float _y)
 	Y = _y;
 }
 
-Vector2D::Vector2D(Vector2D& _other)
+Vector2D::Vector2D(const Vector2D& _other)
 {
 	X = _other.X;
 	Y = _other.Y;
@@ -46,4 +46,9 @@ Vector2D& Vector2D::operator-=(const Vector2D& _rhs)
 	this->X -= _rhs.X;
 	this->Y -= _rhs.Y;
 	return *this;
+}
+
+Vector2D Vector2D::operator*(const float& _rhs)
+{
+	return Vector2D(X * _rhs, Y * _rhs);
 }
