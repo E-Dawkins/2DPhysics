@@ -1,8 +1,9 @@
 #include "raylib.h"
-#include "PhysicsObject.h"
+#include "CircleCollider.h"
 
 #include <iostream>
 
+void Begin();
 void Update(float _deltaSeconds);
 void Draw();
 
@@ -10,6 +11,8 @@ int main()
 {
     InitWindow(800, 500, "2D Physics Example");
     SetTargetFPS(60);
+
+    Begin();
 
     while (!WindowShouldClose())
     {
@@ -26,17 +29,27 @@ int main()
     return 0;
 }
 
+CircleCollider* circle1 = new CircleCollider(Vector2D(400, 0), 1, 25);
+CircleCollider* circle2 = new CircleCollider(Vector2D(450, 200), 1, 50);
+
+void Begin()
+{
+    circle1->SetVelocity(Vector2D(0, 100));
+}
+
 void Update(float _deltaSeconds)
 {
-    static PhysicsObject obj = PhysicsObject(Vector2D(10, 20), 10);
-    obj.SetVelocity(Vector2D(5, 10));
-    obj.Update(_deltaSeconds);
-
-    std::cout << obj.GetPosition().X << ", " << obj.GetPosition().Y << std::endl;
+    circle1->Update(_deltaSeconds);
+    
+    if (circle1->CheckCollision(circle2))
+    {
+        std::cout << "Colliding!" << std::endl;
+    }
 }
 
 void Draw()
 {
     ClearBackground(RAYWHITE);
-    DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+    DrawCircle(circle1->GetPosition().X, circle1->GetPosition().Y, circle1->GetRadius(), RED);
+    DrawCircle(circle2->GetPosition().X, circle2->GetPosition().Y, circle2->GetRadius(), SKYBLUE);
 }

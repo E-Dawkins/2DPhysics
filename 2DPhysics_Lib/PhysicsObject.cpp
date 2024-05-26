@@ -3,7 +3,7 @@
 PhysicsObject::PhysicsObject()
 	: mPosition(0, 0)
 	, mVelocity(0, 0)
-	, mMass(0.f)
+	, mMass(1.f)
 	, mRotation(0.f)
 {
 

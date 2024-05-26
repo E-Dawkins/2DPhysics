@@ -154,11 +154,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CircleCollider.h" />
     <ClInclude Include="DLLDefine.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>

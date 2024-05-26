@@ -16,6 +16,9 @@ public:
 
 	Vector2D operator * (const float& _rhs);
 
+	float Magnitude();
+	float AbsMagnitude();
+
 public:
 	float X;
 	float Y;

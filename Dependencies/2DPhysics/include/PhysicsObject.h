@@ -8,12 +8,13 @@ public:
 	PhysicsObject(Vector2D _position, float _mass, float _rotation = 0.f);
 
 	void Update(float _deltaSeconds);
+	virtual bool CheckCollision(PhysicsObject* _otherObject) = 0;
 
 	// Getters
-	const Vector2D GetPosition() const		{ return mPosition; }
-	const Vector2D GetVelocity() const		{ return mVelocity; }
-	const float GetMass() const				{ return mMass; }
-	const float GetRotation() const			{ return mRotation; }
+	const Vector2D GetPosition() const			{ return mPosition; }
+	const Vector2D GetVelocity() const			{ return mVelocity; }
+	const float GetMass() const					{ return mMass; }
+	const float GetRotation() const				{ return mRotation; }
 
 	// Setters
 	void SetPosition(const Vector2D _position)	{ mPosition = _position; }

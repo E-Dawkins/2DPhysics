@@ -1,4 +1,5 @@
 #include "Vector2D.h"
+#include <cmath>
 
 Vector2D::Vector2D()
 {
@@ -51,4 +52,18 @@ Vector2D& Vector2D::operator-=(const Vector2D& _rhs)
 Vector2D Vector2D::operator*(const float& _rhs)
 {
 	return Vector2D(X * _rhs, Y * _rhs);
+}
+
+float Vector2D::Magnitude()
+{
+	float x2 = X * X;
+	float y2 = Y * Y;
+	return std::sqrtf(x2 + y2);
+}
+
+float Vector2D::AbsMagnitude()
+{
+	float x2 = X * X;
+	float y2 = Y * Y;
+	return abs(std::sqrtf(x2 + y2));
 }
