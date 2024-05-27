@@ -14,30 +14,30 @@ CircleCollider::CircleCollider(Vector2D _position, float _mass, float _radius, f
 
 }
 
-bool CircleCollider::CheckCollision(PhysicsObject* _otherObject)
+bool CircleCollider::CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
 {
-	mCollisionInfo = CollisionInfo();
-
 	if (CircleCollider* otherCircle = dynamic_cast<CircleCollider*>(_otherObject))
 	{
-		return Circle2Circle(otherCircle);
+		return Circle2Circle(otherCircle, _collisionInfo);
 	}
 	return false;
 }
 
-bool CircleCollider::Circle2Circle(CircleCollider* _otherCircle)
+bool CircleCollider::Circle2Circle(CircleCollider* _otherCircle, CollisionInfo& _collisionInfo)
 {
 	Vector2D toOtherCircle = _otherCircle->mPosition - mPosition;
 
 	float dist = toOtherCircle.AbsMagnitude();
 	float combRadius = _otherCircle->mRadius + mRadius;
 
-	if (dist <= combRadius)
+	if (dist <= combRadius) // the circles are colliding
 	{
 		float penetration = combRadius - dist;
+		Vector2D dirToOtherCircle = toOtherCircle.Normalize();
 
-		mCollisionInfo.collisionPoints.push_back(toOtherCircle * penetration);
-		mCollisionInfo.minPenetration = penetration;
+		_collisionInfo.collisionPoints.push_back(mPosition + dirToOtherCircle * dist);
+		_collisionInfo.penetration = penetration;
+		_collisionInfo.minPenetrationVector = -dirToOtherCircle;
 
 		return true;
 	}

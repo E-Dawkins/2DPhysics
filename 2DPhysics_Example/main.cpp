@@ -41,15 +41,19 @@ void Update(float _deltaSeconds)
 {
     circle1->Update(_deltaSeconds);
     
-    if (circle1->CheckCollision(circle2))
+    CollisionInfo collInfo;
+
+    if (circle1->CheckCollision(circle2, collInfo))
     {
-        std::cout << "Colliding! Penetration: " << circle1->GetCollisionInfo().minPenetration << std::endl;
+        std::cout << "Colliding!" << std::endl;
+
+        circle1->ResolveCollision(circle2, collInfo);
     }
 }
 
 void Draw()
 {
     ClearBackground(RAYWHITE);
-    DrawCircle(circle1->GetPosition().X, circle1->GetPosition().Y, circle1->GetRadius(), RED);
-    DrawCircle(circle2->GetPosition().X, circle2->GetPosition().Y, circle2->GetRadius(), SKYBLUE);
+    DrawCircle((int)circle1->GetPosition().X, (int)circle1->GetPosition().Y, circle1->GetRadius(), RED);
+    DrawCircle((int)circle2->GetPosition().X, (int)circle2->GetPosition().Y, circle2->GetRadius(), SKYBLUE);
 }

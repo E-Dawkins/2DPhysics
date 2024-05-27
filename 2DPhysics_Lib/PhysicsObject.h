@@ -2,16 +2,20 @@
 #include "Vector2D.h"
 #include <vector>
 
+#pragma warning (disable : 4251)
+
 struct PHYSICS_API CollisionInfo
 {
 	CollisionInfo()
 	{
 		collisionPoints = {};
-		minPenetration = 0.f;
+		penetration = 0.f;
+		minPenetrationVector = Vector2D(0, 0);
 	}
 
 	std::vector<Vector2D> collisionPoints;
-	float minPenetration;
+	float penetration;
+	Vector2D minPenetrationVector;
 };
 
 class PHYSICS_API PhysicsObject
@@ -21,15 +25,14 @@ public:
 	PhysicsObject(Vector2D _position, float _mass, float _rotation = 0.f);
 
 	void Update(float _deltaSeconds);
-	virtual bool CheckCollision(PhysicsObject* _otherObject) = 0;
-	void ResolveCollision(PhysicsObject* _otherObject);
+	virtual bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo) = 0;
+	void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	// Getters
 	const Vector2D GetPosition() const				{ return mPosition; }
 	const Vector2D GetVelocity() const				{ return mVelocity; }
 	const float GetMass() const						{ return mMass; }
 	const float GetRotation() const					{ return mRotation; }
-	const CollisionInfo GetCollisionInfo() const	{ return mCollisionInfo; }
 
 	// Setters
 	void SetPosition(const Vector2D _position)	{ mPosition = _position; }
@@ -42,7 +45,5 @@ protected:
 	Vector2D mVelocity;
 	float mMass;
 	float mRotation;
-
-	CollisionInfo mCollisionInfo;
 };
 
