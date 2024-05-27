@@ -13,11 +13,18 @@ public:
 
 	Vector2D operator - (const Vector2D& _lhs);
 	Vector2D& operator -= (const Vector2D& _rhs);
+	Vector2D operator - ();
 
 	Vector2D operator * (const float& _rhs);
 
 	float Magnitude();
 	float AbsMagnitude();
+
+	// Normalizes this Vector2D.
+	Vector2D& Normalize();
+
+	// Creates a normalized copy of the passed in Vector2D.
+	static Vector2D Normalized(Vector2D& _toNormalize);
 
 public:
 	float X;

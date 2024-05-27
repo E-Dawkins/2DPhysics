@@ -49,6 +49,11 @@ Vector2D& Vector2D::operator-=(const Vector2D& _rhs)
 	return *this;
 }
 
+Vector2D Vector2D::operator-()
+{
+	return Vector2D(-X, -Y);
+}
+
 Vector2D Vector2D::operator*(const float& _rhs)
 {
 	return Vector2D(X * _rhs, Y * _rhs);
@@ -66,4 +71,18 @@ float Vector2D::AbsMagnitude()
 	float x2 = X * X;
 	float y2 = Y * Y;
 	return abs(std::sqrtf(x2 + y2));
+}
+
+Vector2D& Vector2D::Normalize()
+{
+	float magnitude = Magnitude();
+	X /= magnitude;
+	Y /= magnitude;
+	return *this;
+}
+
+Vector2D Vector2D::Normalized(Vector2D& _toNormalize)
+{
+	float magnitude = _toNormalize.Magnitude();
+	return Vector2D(_toNormalize.X / magnitude, _toNormalize.Y / magnitude);
 }
