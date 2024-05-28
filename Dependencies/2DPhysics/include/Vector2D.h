@@ -26,6 +26,8 @@ public:
 	// Creates a normalized copy of the passed in Vector2D.
 	static Vector2D Normalized(Vector2D& _toNormalize);
 
+	static float Dot(Vector2D& _vec1, Vector2D& _vec2);
+
 public:
 	float X;
 	float Y;

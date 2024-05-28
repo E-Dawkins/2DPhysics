@@ -86,3 +86,8 @@ Vector2D Vector2D::Normalized(Vector2D& _toNormalize)
 	float magnitude = _toNormalize.Magnitude();
 	return Vector2D(_toNormalize.X / magnitude, _toNormalize.Y / magnitude);
 }
+
+float Vector2D::Dot(Vector2D& _vec1, Vector2D& _vec2)
+{
+	return (_vec1.X * _vec2.X) + (_vec1.Y * _vec2.Y);
+}

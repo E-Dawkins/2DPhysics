@@ -3,13 +3,18 @@
 
 #include <iostream>
 
+const int SCREEN_W = 800;
+const int SCREEN_H = 500;
+const int SCREEN_HW = SCREEN_W / 2;
+const int SCREEN_HH = SCREEN_H / 2;
+
 void Begin();
 void Update(float _deltaSeconds);
 void Draw();
 
 int main()
 {
-    InitWindow(800, 500, "2D Physics Example");
+    InitWindow(SCREEN_W, SCREEN_H, "2D Physics Example");
     SetTargetFPS(60);
 
     Begin();
@@ -29,17 +34,18 @@ int main()
     return 0;
 }
 
-CircleCollider* circle1 = new CircleCollider(Vector2D(400, 0), 1, 25);
-CircleCollider* circle2 = new CircleCollider(Vector2D(450, 200), 1, 50);
+CircleCollider* circle1 = new CircleCollider(Vector2D(100, SCREEN_HH-50),       1,      25);
+CircleCollider* circle2 = new CircleCollider(Vector2D(SCREEN_HW, SCREEN_HH),    10,     50);
 
 void Begin()
 {
-    circle1->SetVelocity(Vector2D(0, 100));
+    circle1->SetVelocity(Vector2D(100, 0));
 }
 
 void Update(float _deltaSeconds)
 {
     circle1->Update(_deltaSeconds);
+    circle2->Update(_deltaSeconds);
     
     CollisionInfo collInfo;
 

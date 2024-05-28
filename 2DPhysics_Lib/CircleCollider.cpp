@@ -33,11 +33,11 @@ bool CircleCollider::Circle2Circle(CircleCollider* _otherCircle, CollisionInfo& 
 	if (dist <= combRadius) // the circles are colliding
 	{
 		float penetration = combRadius - dist;
-		Vector2D dirToOtherCircle = toOtherCircle.Normalize();
+		Vector2D normal = toOtherCircle.Normalize();
 
-		_collisionInfo.collisionPoints.push_back(mPosition + dirToOtherCircle * dist);
+		_collisionInfo.collisionPoints.push_back(mPosition + normal * dist);
 		_collisionInfo.penetration = penetration;
-		_collisionInfo.minPenetrationVector = -dirToOtherCircle;
+		_collisionInfo.normal = -normal;
 
 		return true;
 	}
