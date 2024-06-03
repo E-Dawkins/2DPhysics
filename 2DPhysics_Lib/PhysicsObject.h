@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector2D.h"
 #include <vector>
+#include "Maths.h"
 
 #pragma warning (disable : 4251)
 
@@ -28,12 +29,17 @@ public:
 	virtual bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo) = 0;
 	void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
+	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
+	void ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration);
+
 	// Getters
 	const Vector2D GetPosition() const				{ return mPosition; }
 	const Vector2D GetVelocity() const				{ return mVelocity; }
 	const float GetMass() const						{ return mMass; }
 	const float GetRotation() const					{ return mRotation; }
+	const float GetRotationDegrees() const			{ return mRotation * (180.f / Physics2D::pi); }
 	const float GetElasticity() const				{ return mElasticity; }
+	const float GetMoment() const					{ return mMoment; }
 
 	// Setters
 	void SetPosition(const Vector2D _position)	{ mPosition = _position; }
@@ -41,6 +47,7 @@ public:
 	void SetMass(const float _mass)				{ mMass = _mass; }
 	void SetRotation(const float _rotation)		{ mRotation = _rotation; }
 	void SetElasticity(const float _elasticity) { mElasticity = _elasticity; }
+	void SetMoment(const float _moment)			{ mMoment = _moment; }
 
 protected:
 	Vector2D mPosition;
@@ -48,5 +55,7 @@ protected:
 	float mMass;
 	float mRotation;
 	float mElasticity;
+	float mAngularVelocity;
+	float mMoment;
 };
 

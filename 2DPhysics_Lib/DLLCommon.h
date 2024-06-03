@@ -5,3 +5,5 @@
 #else
 #define PHYSICS_API __declspec(dllimport)
 #endif
+
+#include <cmath>

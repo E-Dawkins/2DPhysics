@@ -155,7 +155,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CircleCollider.h" />
-    <ClInclude Include="DLLDefine.h" />
+    <ClInclude Include="DLLCommon.h" />
+    <ClInclude Include="Maths.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
