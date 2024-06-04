@@ -1,5 +1,7 @@
 #include "PhysicsObject.h"
 
+#include "CircleCollider.h"
+
 PhysicsObject::PhysicsObject()
 	: mPosition(0, 0)
 	, mVelocity(0, 0)
@@ -8,8 +10,9 @@ PhysicsObject::PhysicsObject()
 	, mElasticity(1.f)
 	, mAngularVelocity(0.f)
 	, mMoment(0.f)
+	, mColliderType(UNKNOWN)
 {
-
+	RegisterCollisionChecks();
 }
 
 PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
@@ -20,13 +23,27 @@ PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
 	, mElasticity(1.f)
 	, mAngularVelocity(0.f)
 	, mMoment(0.f)
+	, mColliderType(UNKNOWN)
 {
+	RegisterCollisionChecks();
 }
 
 void PhysicsObject::Update(float _deltaSeconds)
 {
 	mPosition += mVelocity * _deltaSeconds;
 	mRotation += mAngularVelocity * _deltaSeconds;
+}
+
+bool PhysicsObject::CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
+{
+	int funcIndex = mColliderType + COLLIDER_TYPE_MAX * _otherObject->mColliderType;
+
+	if (funcIndex < COLLIDER_TYPE_MAX * COLLIDER_TYPE_MAX) // valid function index
+	{
+		return (this->*mCollisionChecks[funcIndex])(this, _otherObject, _collisionInfo);
+	}
+
+	return false;
 }
 
 void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
@@ -82,3 +99,57 @@ void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, Vector2D _no
 	mPosition -= factor1 * _normal * _penetration;
 	_otherObject->mPosition += (1.f - factor1) * _normal * _penetration;
 }
+
+void PhysicsObject::RegisterCollisionChecks()
+{
+	//			PLANE	CIRCLE
+	// PLANE
+	// CIRCLE
+
+	mCollisionChecks = {
+		&PhysicsObject::Plane2Plane, &PhysicsObject::Circle2Plane,
+		&PhysicsObject::Plane2Circle, &PhysicsObject::Circle2Circle
+	};
+}
+
+#pragma region CollisionChecks
+bool PhysicsObject::Circle2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
+{
+	CircleCollider* circle1 = static_cast<CircleCollider*>(_object1);
+	CircleCollider* circle2 = static_cast<CircleCollider*>(_object2);
+
+	Vector2D toOtherCircle = circle2->mPosition - circle1->mPosition;
+
+	float dist = toOtherCircle.AbsMagnitude();
+	float combRadius = circle2->GetRadius() + circle1->GetRadius();
+
+	if (dist <= combRadius) // the circles are colliding
+	{
+		float penetration = combRadius - dist;
+		Vector2D normal = toOtherCircle.Normalized();
+
+		_collisionInfo.collisionPoints.push_back(circle1->mPosition + normal * circle1->GetRadius());
+		_collisionInfo.penetration = penetration;
+		_collisionInfo.normal = normal;
+
+		return true;
+	}
+
+	return false;
+}
+
+bool PhysicsObject::Circle2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
+{
+	return false;
+}
+
+bool PhysicsObject::Plane2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
+{
+	return false;
+}
+
+bool PhysicsObject::Plane2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
+{
+	return false;
+}
+#pragma endregion

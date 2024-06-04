@@ -2,8 +2,18 @@
 #include "Vector2D.h"
 #include <vector>
 #include "Maths.h"
+#include <array>
 
-#pragma warning (disable : 4251)
+enum PHYSICS_API ColliderType
+{
+	UNKNOWN = -1,
+	PLANE,
+	CIRCLE,
+
+	COLLIDER_TYPE_MAX
+};
+
+#pragma warning (disable : 4251) // disables a warning on the std::vector in CollisionInfo
 
 struct PHYSICS_API CollisionInfo
 {
@@ -26,7 +36,7 @@ public:
 	PhysicsObject(Vector2D _position, float _mass, float _rotation = 0.f);
 
 	void Update(float _deltaSeconds);
-	virtual bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo) = 0;
+	bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 	void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
@@ -50,6 +60,19 @@ public:
 	void SetMoment(const float _moment)			{ mMoment = _moment; }
 
 protected:
+	void RegisterCollisionChecks();
+
+	bool Circle2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
+	bool Circle2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
+	bool Plane2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
+	bool Plane2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
+
+protected:
+	typedef bool (PhysicsObject::* CollisionCheck)(PhysicsObject*, PhysicsObject*, CollisionInfo&);
+	std::array<CollisionCheck, COLLIDER_TYPE_MAX * COLLIDER_TYPE_MAX> mCollisionChecks;
+
+	ColliderType mColliderType;
+
 	Vector2D mPosition;
 	Vector2D mVelocity;
 	float mMass;

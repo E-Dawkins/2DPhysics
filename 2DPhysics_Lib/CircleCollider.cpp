@@ -6,6 +6,8 @@ CircleCollider::CircleCollider()
 {
 	float radiusInM = mRadius / 100.f;
 	mMoment = 0.5f * GetMass() * radiusInM * radiusInM;
+
+	mColliderType = CIRCLE;
 }
 
 CircleCollider::CircleCollider(Vector2D _position, float _mass, float _radius, float _rotation)
@@ -14,15 +16,8 @@ CircleCollider::CircleCollider(Vector2D _position, float _mass, float _radius, f
 {
 	float radiusInM = mRadius / 100.f;
 	mMoment = 0.5f * GetMass() * radiusInM * radiusInM;
-}
 
-bool CircleCollider::CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
-{
-	if (CircleCollider* otherCircle = dynamic_cast<CircleCollider*>(_otherObject))
-	{
-		return Circle2Circle(otherCircle, _collisionInfo);
-	}
-	return false;
+	mColliderType = CIRCLE;
 }
 
 bool CircleCollider::Circle2Circle(CircleCollider* _otherCircle, CollisionInfo& _collisionInfo)
