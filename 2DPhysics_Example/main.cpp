@@ -28,6 +28,8 @@ Vector2 ConvertVector2D(Vector2D _vec);
 
 void DrawCircleObject(CircleCollider* _circle, Color _color);
 void DrawPlaneObject(PlaneCollider* _plane, Color _color);
+
+void StartPhysicsSim();
 #pragma endregion
 
 int main()
@@ -50,13 +52,8 @@ int main()
 
 void Begin()
 {
-    circle1->SetPosition({circle1->GetPosition().X - 8, circle1->GetPosition().Y - 0.2f});
-    circle1->SetVelocity(Vector2D(6, 0));
-
-    circle2->SetVelocity(Vector2D(SCREEN_W, SCREEN_H).Normalize() * 10.f);
-
-    circle3->SetPosition({ circle3->GetPosition().X - 10, circle3->GetPosition().Y - 0.3f });
-    circle3->SetVelocity(Vector2D(3, 0));
+    circle1->SetPosition({circle1->GetPosition().X - 7, circle1->GetPosition().Y - 0.2f});
+    circle3->SetPosition({ circle3->GetPosition().X - 9, circle3->GetPosition().Y - 0.3f });
 
     plane1->SetPosition({ plane1->GetPosition().X - 10, plane1->GetPosition().Y });
     plane2->SetPosition({ plane2->GetPosition().X + 10, plane2->GetPosition().Y });
@@ -71,6 +68,11 @@ void Begin()
 
 void Update(float _deltaSeconds)
 {
+    if (GetKeyPressed() == KEY_SPACE)
+    {
+        StartPhysicsSim();
+    }
+
     circle1->Update(_deltaSeconds);
     circle2->Update(_deltaSeconds);
     circle3->Update(_deltaSeconds);
@@ -205,5 +207,12 @@ void DrawPlaneObject(PlaneCollider* _plane, Color _color)
     Vector2 end = ConvertVector2D(planeCenter + adjFacing * planeHalfExtent);
 
     DrawLineEx(start, end, 0.1f, _color);
+}
+
+void StartPhysicsSim()
+{
+    circle1->SetVelocity(Vector2D(8, 0));
+    //circle2->SetVelocity(Vector2D(SCREEN_W-10, SCREEN_H).Normalize() * 8.f);
+    circle3->SetVelocity(Vector2D(5, 0));
 }
 #pragma endregion
