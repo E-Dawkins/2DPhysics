@@ -158,11 +158,13 @@
     <ClInclude Include="DLLCommon.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="PhysicsObject.h" />
+    <ClInclude Include="PlaneCollider.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
+    <ClCompile Include="PlaneCollider.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

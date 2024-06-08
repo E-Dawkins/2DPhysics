@@ -1,6 +1,9 @@
 #include "PhysicsObject.h"
 
 #include "CircleCollider.h"
+#include "PlaneCollider.h"
+
+#include "Maths.h"
 
 PhysicsObject::PhysicsObject()
 	: mPosition(0, 0)
@@ -48,35 +51,61 @@ bool PhysicsObject::CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _
 
 void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
 {
-    Vector2D normal = Vector2D::Normalize(_collisionInfo.normal);
-    Vector2D perp = Vector2D(normal.Y, -normal.X); // vector perpendicular to the normal
+	// Impulse magnitude along normal
+	//                    -(1+e)((vB - vA) * n)
+	// jn = -------------------------------------------------
+	//       1/mA + 1/mB + ((rA X n)^2)/iA + ((rB X n)^2)/iB
 
-    // Determine total velocity of the contact points, both linear and rotational
-    // 'r' is the radius from axis to application of force
-    float r1 = Vector2D::Dot(_collisionInfo.collisionPoints[0] - mPosition, -perp);
-    float r2 = Vector2D::Dot(_collisionInfo.collisionPoints[0] - _otherObject->mPosition, perp);
+	Vector2D rA = _collisionInfo.collisionPoints[0] - mPosition;
+	Vector2D rB = _collisionInfo.collisionPoints[0] - _otherObject->mPosition;
 
-    // Velocity of contact point on this object
-    float v1 = Vector2D::Dot(mVelocity, normal) - r1 * mAngularVelocity;
-    // Velocity of contact point on other object
-    float v2 = Vector2D::Dot(_otherObject->mVelocity, normal) + r2 * _otherObject->mAngularVelocity;
+	Vector2D vA = mVelocity + Vector2D::Cross(mAngularVelocity, rA);
+	Vector2D vB = _otherObject->mVelocity + Vector2D::Cross(_otherObject->mAngularVelocity, rB);
 
-    if (v1 > v2) // moving closer to each other
-    {
-        // Effective mass at the contact point for each object
-        // i.e. how far the point will move due to the applied force
-        float mass1 = 1.f / (1.f / GetMass() + (r1 * r1) / GetMoment());
-        float mass2 = 1.f / (1.f / _otherObject->GetMass() + (r2 * r2) / _otherObject->GetMoment());
+	Vector2D rV = (_otherObject->mVelocity + Vector2D::Cross(_otherObject->mAngularVelocity, rB)) -
+		(mVelocity - Vector2D::Cross(mAngularVelocity, rA));
 
-        float elasticity = (GetElasticity() + _otherObject->GetElasticity()) * 0.5f;
+	Vector2D normal = Vector2D::Normalize(_collisionInfo.normal);
 
-        Vector2D force = -(1.f + elasticity) * mass1 * mass2 /
-            (mass1 + mass2) * (v1 - v2) * normal;
+	float rACrossN = Vector2D::Cross(rA, normal);
+	float rBCrossN = Vector2D::Cross(rB, normal);
 
-        // Apply equal and opposite force
-        ApplyForce(force, _collisionInfo.collisionPoints[0] - mPosition);
-        _otherObject->ApplyForce(-force, _collisionInfo.collisionPoints[0] - _otherObject->mPosition);
-    }
+	float elasticity = (mElasticity + _otherObject->mElasticity) * 0.5f;
+	float eTerm = -(1.f + elasticity);
+
+	float massSum = (1.f / mMass) + (1.f / _otherObject->mMass) + ((rACrossN * rACrossN) / mMoment) + ((rBCrossN * rBCrossN) / _otherObject->mMoment);
+
+	float jn = (eTerm * Vector2D::Dot(rV, normal)) / massSum;
+
+	ApplyForce(-jn * normal, rA);
+	_otherObject->ApplyForce(jn * normal, rB);
+
+	// Impulse magnitude along tangent
+	//                      -((vB - vA) * t)
+	// jt = -------------------------------------------------
+	//       1/mA + 1/mB + ((rA X t)^2)/iA + ((rB X t)^2)/iB
+
+	rV = (_otherObject->mVelocity + Vector2D::Cross(_otherObject->mAngularVelocity, rB)) -
+		(mVelocity - Vector2D::Cross(mAngularVelocity, rA));
+
+	Vector2D tangent = rV - Vector2D::Dot(rV, normal) * normal;
+	tangent.Normalized();
+
+	float jt = (-Vector2D::Dot(rV, tangent)) / massSum;
+
+	Vector2D tangentImpulse;
+
+	const float sf = 0.5f; // static friction
+	const float df = 0.3f; // dynamic friction
+
+	// Coulomb's Law
+	if (std::abs(jt) < jn * sf)
+		tangentImpulse = tangent * jt;
+	else
+		tangentImpulse = tangent * -jn * df;
+
+	ApplyForce(-tangentImpulse, rA);
+	_otherObject->ApplyForce(tangentImpulse, rB);
 
 	// Move out of penetration
 	if (_collisionInfo.penetration > 0.f)
@@ -113,10 +142,49 @@ void PhysicsObject::RegisterCollisionChecks()
 }
 
 #pragma region CollisionChecks
-bool PhysicsObject::Circle2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
+bool PhysicsObject::Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo)
 {
-	CircleCollider* circle1 = static_cast<CircleCollider*>(_object1);
-	CircleCollider* circle2 = static_cast<CircleCollider*>(_object2);
+	return false;
+}
+
+bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, CollisionInfo& _collisionInfo)
+{
+	CircleCollider* circle = static_cast<CircleCollider*>(_circle);
+	PlaneCollider* plane = static_cast<PlaneCollider*>(_plane);
+
+	Vector2D planeToCircle = circle->mPosition - plane->mPosition;
+	
+	float distFromSurface = Vector2D::Dot(planeToCircle, plane->GetNormal());
+	float velDirection = Vector2D::Dot(circle->GetVelocity(), plane->GetNormal());
+
+	// Circle is within collision distance of infinite planes' surface
+	// and moving towards plane's surface
+	if (distFromSurface <= circle->GetRadius() && velDirection < 0.f)
+	{
+		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
+		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane);
+
+		if (distFromCenter <= plane->GetHalfExtent() - circle->GetRadius())
+		{
+			_collisionInfo.collisionPoints.push_back(pointOnPlane);
+			_collisionInfo.penetration = circle->GetRadius() - distFromSurface;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool PhysicsObject::Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo)
+{
+	return Circle2Plane(_circle, _plane, _collisionInfo);
+}
+
+bool PhysicsObject::Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circle2, CollisionInfo& _collisionInfo)
+{
+	CircleCollider* circle1 = static_cast<CircleCollider*>(_circle1);
+	CircleCollider* circle2 = static_cast<CircleCollider*>(_circle2);
 
 	Vector2D toOtherCircle = circle2->mPosition - circle1->mPosition;
 
@@ -135,21 +203,6 @@ bool PhysicsObject::Circle2Circle(PhysicsObject* _object1, PhysicsObject* _objec
 		return true;
 	}
 
-	return false;
-}
-
-bool PhysicsObject::Circle2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
-{
-	return false;
-}
-
-bool PhysicsObject::Plane2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
-{
-	return false;
-}
-
-bool PhysicsObject::Plane2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo)
-{
 	return false;
 }
 #pragma endregion

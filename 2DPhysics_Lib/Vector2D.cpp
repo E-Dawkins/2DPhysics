@@ -18,12 +18,9 @@ Vector2D::Vector2D(const Vector2D& _other)
 	Y = _other.Y;
 }
 
-Vector2D Vector2D::operator+(Vector2D _lhs)
+Vector2D operator+(Vector2D _lhs, Vector2D _rhs)
 {
-	Vector2D out;
-	out.X = X + _lhs.X;
-	out.Y = Y + _lhs.Y;
-	return out;
+	return Vector2D(_lhs.X + _rhs.X, _lhs.Y + _rhs.Y);
 }
 
 Vector2D& Vector2D::operator+=(Vector2D _rhs)
@@ -128,4 +125,12 @@ Vector2D Vector2D::Cross(const Vector2D& _vec, const float& _s)
 Vector2D Vector2D::AngleToUnitVector(const float& _angle)
 {
 	return Vector2D(std::sinf(_angle), std::cosf(_angle));
+}
+
+float Vector2D::Distance(const Vector2D& _vec1, const Vector2D& _vec2)
+{
+	float xDiff = std::powf(_vec2.X - _vec1.X, 2.f);
+	float yDiff = std::powf(_vec2.Y - _vec1.Y, 2.f);
+
+	return std::sqrtf(xDiff + yDiff);
 }

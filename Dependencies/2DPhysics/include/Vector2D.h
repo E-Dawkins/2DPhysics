@@ -8,7 +8,7 @@ public:
 	Vector2D(float _x, float _y);
 	Vector2D(const Vector2D& _other);
 
-	Vector2D operator + (Vector2D _lhs);
+	PHYSICS_API friend Vector2D operator + (Vector2D _lhs, Vector2D _rhs);
 	Vector2D& operator += (Vector2D _rhs);
 
 	Vector2D operator - (Vector2D _lhs);
@@ -16,7 +16,7 @@ public:
 	Vector2D operator - ();
 
 	Vector2D operator * (float _rhs);
-	friend Vector2D operator * (float _lhs, Vector2D _rhs);
+	PHYSICS_API friend Vector2D operator * (float _lhs, Vector2D _rhs);
 
 	Vector2D operator / (float _rhs);
 	Vector2D& operator /= (float _rhs);
@@ -37,6 +37,8 @@ public:
 	static Vector2D Cross(const Vector2D& _vec, const float& _s);
 
 	static Vector2D AngleToUnitVector(const float& _angle);
+
+	static float Distance(const Vector2D& _vec1, const Vector2D& _vec2);
 
 public:
 	float X;

@@ -37,7 +37,7 @@ public:
 
 	void Update(float _deltaSeconds);
 	bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
-	void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
+	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
 	void ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration);
@@ -47,25 +47,27 @@ public:
 	const Vector2D GetVelocity() const				{ return mVelocity; }
 	const float GetMass() const						{ return mMass; }
 	const float GetRotation() const					{ return mRotation; }
-	const float GetRotationDegrees() const			{ return mRotation * (180.f / Physics2D::pi); }
+	const float GetRotationDegrees() const			{ return Physics2D::Rad2Deg(mRotation); }
 	const float GetElasticity() const				{ return mElasticity; }
 	const float GetMoment() const					{ return mMoment; }
+	const float GetAngularVelocity() const			{ return mAngularVelocity; }
 
 	// Setters
-	void SetPosition(const Vector2D _position)	{ mPosition = _position; }
-	void SetVelocity(const Vector2D _velocity)	{ mVelocity = _velocity; }
-	void SetMass(const float _mass)				{ mMass = _mass; }
-	void SetRotation(const float _rotation)		{ mRotation = _rotation; }
-	void SetElasticity(const float _elasticity) { mElasticity = _elasticity; }
-	void SetMoment(const float _moment)			{ mMoment = _moment; }
+	void SetPosition(const Vector2D _position)				{ mPosition = _position; }
+	void SetVelocity(const Vector2D _velocity)				{ mVelocity = _velocity; }
+	void SetMass(const float _mass)							{ mMass = _mass; }
+	void SetRotation(const float _rotation)					{ mRotation = _rotation; }
+	void SetElasticity(const float _elasticity)				{ mElasticity = _elasticity; }
+	void SetMoment(const float _moment)						{ mMoment = _moment; }
+	void SetAngularVelocity(const float _angularVelocity)	{ mAngularVelocity = _angularVelocity; }
 
 protected:
 	void RegisterCollisionChecks();
 
-	bool Circle2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
-	bool Circle2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
-	bool Plane2Circle(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
-	bool Plane2Plane(PhysicsObject* _object1, PhysicsObject* _object2, CollisionInfo& _collisionInfo);
+	bool Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo);
+	bool Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
+	bool Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
+	bool Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circle2, CollisionInfo& _collisionInfo);
 
 protected:
 	typedef bool (PhysicsObject::* CollisionCheck)(PhysicsObject*, PhysicsObject*, CollisionInfo&);

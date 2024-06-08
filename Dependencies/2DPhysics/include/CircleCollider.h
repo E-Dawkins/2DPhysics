@@ -14,9 +14,6 @@ public:
 	void SetRadius(const float _radius) { mRadius = _radius; }
 
 protected:
-	bool Circle2Circle(CircleCollider* _otherCircle, CollisionInfo& _collisionInfo);
-
-protected:
 	float mRadius;
 };
 
