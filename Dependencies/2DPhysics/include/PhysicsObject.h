@@ -51,6 +51,7 @@ public:
 	const float GetElasticity() const				{ return mElasticity; }
 	const float GetMoment() const					{ return mMoment; }
 	const float GetAngularVelocity() const			{ return mAngularVelocity; }
+	const bool IsKinematic() const					{ return mKinematic; }
 
 	// Setters
 	void SetPosition(const Vector2D _position)				{ mPosition = _position; }
@@ -60,6 +61,7 @@ public:
 	void SetElasticity(const float _elasticity)				{ mElasticity = _elasticity; }
 	void SetMoment(const float _moment)						{ mMoment = _moment; }
 	void SetAngularVelocity(const float _angularVelocity)	{ mAngularVelocity = _angularVelocity; }
+	void SetKinematic(const bool _kinematic)				{ mKinematic = _kinematic; }
 
 protected:
 	void RegisterCollisionChecks();
@@ -82,5 +84,6 @@ protected:
 	float mElasticity;
 	float mAngularVelocity;
 	float mMoment;
+	bool mKinematic;
 };
 

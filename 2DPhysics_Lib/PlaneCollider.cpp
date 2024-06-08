@@ -5,10 +5,11 @@ PlaneCollider::PlaneCollider()
 	, mNormal(0, 1)
 	, mHalfExtent(0.5f)
 {
-	float halfExtentInM = mHalfExtent / 100.f;
-	mMoment = (1.f / 3.f) * GetMass() * halfExtentInM * halfExtentInM;
+	mMoment = (1.f / 3.f) * GetMass() * mHalfExtent * mHalfExtent;
 
 	mColliderType = PLANE;
+
+    mKinematic = true;
 }
 
 PlaneCollider::PlaneCollider(Vector2D _position, float _mass, Vector2D _normal, float _halfExtent, float _rotation)
@@ -16,10 +17,11 @@ PlaneCollider::PlaneCollider(Vector2D _position, float _mass, Vector2D _normal, 
 	, mNormal(_normal)
 	, mHalfExtent(_halfExtent)
 {
-	float halfExtentInM = mHalfExtent / 100.f;
-	mMoment = (1.f / 3.f) * GetMass() * halfExtentInM * halfExtentInM;
+	mMoment = (1.f / 3.f) * GetMass() * mHalfExtent * mHalfExtent;
 
 	mColliderType = PLANE;
+
+    mKinematic = true;
 }
 
 void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)

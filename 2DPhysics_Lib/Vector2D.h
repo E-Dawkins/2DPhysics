@@ -24,11 +24,11 @@ public:
 	float Magnitude();
 	float AbsMagnitude();
 
-	// Normalizes this Vector2D.
-	Vector2D& Normalized();
+	// Normalizes this Vector2D
+	Vector2D& Normalize();
 
-	// Creates a normalized copy of the passed in Vector2D.
-	static Vector2D Normalize(Vector2D& _toNormalize);
+	// Creates a normalized copy of the passed in Vector2D
+	static Vector2D Normalized(Vector2D& _toNormalize);
 
 	static float Dot(Vector2D _vec1, Vector2D _vec2);
 
@@ -36,6 +36,7 @@ public:
 	static Vector2D Cross(const float& _s, const Vector2D& _vec);
 	static Vector2D Cross(const Vector2D& _vec, const float& _s);
 
+	// Converts an angle (degrees) to a unit vector
 	static Vector2D AngleToUnitVector(const float& _angle);
 
 	static float Distance(const Vector2D& _vec1, const Vector2D& _vec2);

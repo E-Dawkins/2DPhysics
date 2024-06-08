@@ -53,6 +53,8 @@ void Begin()
     circle1->SetPosition({circle1->GetPosition().X - 8, circle1->GetPosition().Y - 0.2f});
     circle1->SetVelocity(Vector2D(6, 0));
 
+    circle2->SetVelocity(Vector2D(SCREEN_W, SCREEN_H).Normalize() * 10.f);
+
     circle3->SetPosition({ circle3->GetPosition().X - 10, circle3->GetPosition().Y - 0.3f });
     circle3->SetVelocity(Vector2D(3, 0));
 
@@ -198,7 +200,7 @@ void DrawPlaneObject(PlaneCollider* _plane, Color _color)
 {
     float planeHalfExtent = _plane->GetHalfExtent();
     Vector2D planeCenter = _plane->GetPosition();
-    Vector2D adjFacing = (Vector2D(_plane->GetNormal().Y, -_plane->GetNormal().X) * planeHalfExtent).Normalized();
+    Vector2D adjFacing = (Vector2D(_plane->GetNormal().Y, -_plane->GetNormal().X)).Normalize();
     Vector2 start = ConvertVector2D(planeCenter - adjFacing * planeHalfExtent);
     Vector2 end = ConvertVector2D(planeCenter + adjFacing * planeHalfExtent);
 

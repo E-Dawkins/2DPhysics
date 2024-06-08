@@ -1,5 +1,7 @@
 #include "Vector2D.h"
 
+#include "Maths.h"
+
 Vector2D::Vector2D()
 {
 	X = 0;
@@ -86,7 +88,7 @@ float Vector2D::AbsMagnitude()
 	return abs(std::sqrtf(x2 + y2));
 }
 
-Vector2D& Vector2D::Normalized()
+Vector2D& Vector2D::Normalize()
 {
 	float magnitude = Magnitude();
 	magnitude = (magnitude > 0.f ? magnitude : 1.f);
@@ -95,7 +97,7 @@ Vector2D& Vector2D::Normalized()
 	return *this;
 }
 
-Vector2D Vector2D::Normalize(Vector2D& _toNormalize)
+Vector2D Vector2D::Normalized(Vector2D& _toNormalize)
 {
 	float magnitude = _toNormalize.Magnitude();
 	magnitude = (magnitude > 0.f ? magnitude : 1.f);
@@ -124,7 +126,8 @@ Vector2D Vector2D::Cross(const Vector2D& _vec, const float& _s)
 
 Vector2D Vector2D::AngleToUnitVector(const float& _angle)
 {
-	return Vector2D(std::sinf(_angle), std::cosf(_angle));
+	const float radians = Physics2D::Deg2Rad(_angle);
+	return Vector2D(std::sinf(radians), std::cosf(radians));
 }
 
 float Vector2D::Distance(const Vector2D& _vec1, const Vector2D& _vec2)

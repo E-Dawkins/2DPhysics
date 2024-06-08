@@ -65,7 +65,7 @@ void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 	Vector2D rV = (_otherObject->mVelocity + Vector2D::Cross(_otherObject->mAngularVelocity, rB)) -
 		(mVelocity - Vector2D::Cross(mAngularVelocity, rA));
 
-	Vector2D normal = Vector2D::Normalize(_collisionInfo.normal);
+	Vector2D normal = Vector2D::Normalized(_collisionInfo.normal);
 
 	float rACrossN = Vector2D::Cross(rA, normal);
 	float rBCrossN = Vector2D::Cross(rB, normal);
@@ -89,7 +89,7 @@ void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 		(mVelocity - Vector2D::Cross(mAngularVelocity, rA));
 
 	Vector2D tangent = rV - Vector2D::Dot(rV, normal) * normal;
-	tangent.Normalized();
+	tangent.Normalize();
 
 	float jt = (-Vector2D::Dot(rV, tangent)) / massSum;
 
@@ -125,8 +125,11 @@ void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, Vector2D _no
 	float mass2 = _otherObject->mMass;
 	float factor1 = mass2 / (mMass + mass2);
 
-	mPosition -= factor1 * _normal * _penetration;
-	_otherObject->mPosition += (1.f - factor1) * _normal * _penetration;
+	if (!mKinematic)
+		mPosition -= factor1 * _normal * _penetration;
+
+	if (!_otherObject->mKinematic)
+		_otherObject->mPosition += (1.f - factor1) * _normal * _penetration;
 }
 
 void PhysicsObject::RegisterCollisionChecks()
@@ -162,9 +165,9 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 	if (distFromSurface <= circle->GetRadius() && velDirection < 0.f)
 	{
 		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
-		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane);
+		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane) - circle->GetRadius();
 
-		if (distFromCenter <= plane->GetHalfExtent() - circle->GetRadius())
+		if (distFromCenter <= plane->GetHalfExtent())
 		{
 			_collisionInfo.collisionPoints.push_back(pointOnPlane);
 			_collisionInfo.penetration = circle->GetRadius() - distFromSurface;
@@ -194,7 +197,7 @@ bool PhysicsObject::Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circl
 	if (dist <= combRadius) // the circles are colliding
 	{
 		float penetration = combRadius - dist;
-		Vector2D normal = toOtherCircle.Normalized();
+		Vector2D normal = toOtherCircle.Normalize();
 
 		_collisionInfo.collisionPoints.push_back(circle1->mPosition + normal * circle1->GetRadius());
 		_collisionInfo.penetration = penetration;
