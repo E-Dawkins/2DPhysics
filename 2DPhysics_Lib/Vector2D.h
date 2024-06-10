@@ -41,6 +41,8 @@ public:
 
 	static float Distance(const Vector2D& _vec1, const Vector2D& _vec2);
 
+	static Vector2D PerpendicularVector(const Vector2D& _vec);
+
 public:
 	float X;
 	float Y;

@@ -45,6 +45,8 @@ public:
 	// Getters
 	const Vector2D GetPosition() const				{ return mPosition; }
 	const Vector2D GetVelocity() const				{ return mVelocity; }
+	const Vector2D GetLocalRight() const			{ return mLocalRight; }
+	const Vector2D GetLocalUp() const				{ return mLocalUp; }
 	const float GetMass() const						{ return mMass; }
 	const float GetRotation() const					{ return mRotation; }
 	const float GetRotationDegrees() const			{ return Physics2D::Rad2Deg(mRotation); }
@@ -57,13 +59,15 @@ public:
 	void SetPosition(const Vector2D _position)				{ mPosition = _position; }
 	void SetVelocity(const Vector2D _velocity)				{ mVelocity = _velocity; }
 	void SetMass(const float _mass)							{ mMass = _mass; }
-	void SetRotation(const float _rotation)					{ mRotation = _rotation; }
+	void SetRotationDegrees(const float _rotation)			{ mRotation = Physics2D::Deg2Rad(_rotation); }
 	void SetElasticity(const float _elasticity)				{ mElasticity = _elasticity; }
 	void SetMoment(const float _moment)						{ mMoment = _moment; }
 	void SetAngularVelocity(const float _angularVelocity)	{ mAngularVelocity = _angularVelocity; }
 	void SetKinematic(const bool _kinematic)				{ mKinematic = _kinematic; }
 
 protected:
+	void UpdateLocalAxes();
+
 	void RegisterCollisionChecks();
 
 	bool Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo);
@@ -79,11 +83,16 @@ protected:
 
 	Vector2D mPosition;
 	Vector2D mVelocity;
+	Vector2D mLocalRight;
+	Vector2D mLocalUp;
+
 	float mMass;
 	float mRotation;
+	float mLastRotation;
 	float mElasticity;
 	float mAngularVelocity;
 	float mMoment;
+	
 	bool mKinematic;
 };
 

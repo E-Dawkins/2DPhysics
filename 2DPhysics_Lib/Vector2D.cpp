@@ -127,7 +127,7 @@ Vector2D Vector2D::Cross(const Vector2D& _vec, const float& _s)
 Vector2D Vector2D::AngleToUnitVector(const float& _angle)
 {
 	const float radians = Physics2D::Deg2Rad(_angle);
-	return Vector2D(std::sinf(radians), std::cosf(radians));
+	return Vector2D(std::sinf(radians), std::cosf(radians)).Normalize();
 }
 
 float Vector2D::Distance(const Vector2D& _vec1, const Vector2D& _vec2)
@@ -136,4 +136,9 @@ float Vector2D::Distance(const Vector2D& _vec1, const Vector2D& _vec2)
 	float yDiff = std::powf(_vec2.Y - _vec1.Y, 2.f);
 
 	return std::sqrtf(xDiff + yDiff);
+}
+
+Vector2D Vector2D::PerpendicularVector(const Vector2D& _vec)
+{
+	return Vector2D(_vec.Y, -_vec.X);
 }

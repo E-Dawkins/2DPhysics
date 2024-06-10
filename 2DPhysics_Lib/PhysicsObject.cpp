@@ -9,12 +9,14 @@ PhysicsObject::PhysicsObject()
 	: mPosition(0, 0)
 	, mVelocity(0, 0)
 	, mMass(1.f)
-	, mRotation(0.f)
 	, mElasticity(1.f)
 	, mAngularVelocity(0.f)
 	, mMoment(0.f)
 	, mColliderType(UNKNOWN)
 {
+	SetRotationDegrees(0.f);
+	UpdateLocalAxes();
+
 	RegisterCollisionChecks();
 }
 
@@ -22,17 +24,25 @@ PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
 	: mPosition(_position)
 	, mVelocity(0, 0)
 	, mMass(_mass)
-	, mRotation(_rotation)
 	, mElasticity(1.f)
 	, mAngularVelocity(0.f)
 	, mMoment(0.f)
 	, mColliderType(UNKNOWN)
 {
+	SetRotationDegrees(_rotation);
+	UpdateLocalAxes();
+
 	RegisterCollisionChecks();
 }
 
 void PhysicsObject::Update(float _deltaSeconds)
 {
+	// Update stored local variables
+	if (mLastRotation != mRotation)
+	{
+		UpdateLocalAxes();
+	}
+
 	mPosition += mVelocity * _deltaSeconds;
 	mRotation += mAngularVelocity * _deltaSeconds;
 }
@@ -117,7 +127,7 @@ void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 void PhysicsObject::ApplyForce(Vector2D _force, const Vector2D _contact)
 {
 	mVelocity += _force / GetMass();
-	mAngularVelocity += (_force.Y * _contact.X - _force.X * _contact.Y) / GetMoment();
+	mAngularVelocity += Vector2D::Cross(_contact, _force) / GetMoment();
 }
 
 void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration)
@@ -130,6 +140,14 @@ void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, Vector2D _no
 
 	if (!_otherObject->mKinematic)
 		_otherObject->mPosition += (1.f - factor1) * _normal * _penetration;
+}
+
+void PhysicsObject::UpdateLocalAxes()
+{
+	mLastRotation = mRotation;
+
+	mLocalUp = Vector2D::AngleToUnitVector(Physics2D::Rad2Deg(mRotation));
+	mLocalRight = Vector2D::PerpendicularVector(mLocalUp).Normalize();
 }
 
 void PhysicsObject::RegisterCollisionChecks()
@@ -157,14 +175,14 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 
 	Vector2D planeToCircle = circle->mPosition - plane->mPosition;
 	
-	float distFromSurface = Vector2D::Dot(planeToCircle, plane->GetNormal());
-	float velDirection = Vector2D::Dot(circle->GetVelocity(), plane->GetNormal());
+	float distFromSurface = Vector2D::Dot(planeToCircle, plane->GetLocalUp());
+	float velDirection = Vector2D::Dot(circle->GetVelocity(), plane->GetLocalUp());
 
 	// Circle is within collision distance of infinite planes' surface
 	// and moving towards plane's surface
 	if (distFromSurface <= circle->GetRadius() && velDirection < 0.f)
 	{
-		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
+		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetLocalUp());
 		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane) - circle->GetRadius();
 
 		if (distFromCenter <= plane->GetHalfExtent())

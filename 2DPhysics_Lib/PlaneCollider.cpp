@@ -2,7 +2,6 @@
 
 PlaneCollider::PlaneCollider()
 	: PhysicsObject()
-	, mNormal(0, 1)
 	, mHalfExtent(0.5f)
 {
 	mMoment = (1.f / 3.f) * GetMass() * mHalfExtent * mHalfExtent;
@@ -12,9 +11,8 @@ PlaneCollider::PlaneCollider()
     mKinematic = true;
 }
 
-PlaneCollider::PlaneCollider(Vector2D _position, float _mass, Vector2D _normal, float _halfExtent, float _rotation)
+PlaneCollider::PlaneCollider(Vector2D _position, float _mass, float _halfExtent, float _rotation)
 	: PhysicsObject(_position, _mass, _rotation)
-	, mNormal(_normal)
 	, mHalfExtent(_halfExtent)
 {
 	mMoment = (1.f / 3.f) * GetMass() * mHalfExtent * mHalfExtent;
@@ -35,12 +33,12 @@ void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
     Vector2D relativeVel = _otherObject->GetVelocity() + _otherObject->GetAngularVelocity()
         * Vector2D(-localContact.Y, localContact.X);
 
-    float velocityIntoPlane = Vector2D::Dot(relativeVel, mNormal);
+    float velocityIntoPlane = Vector2D::Dot(relativeVel, mLocalUp);
     float elasticity = (GetElasticity() + _otherObject->GetElasticity()) * 0.5f;
 
     // Perpendicular distance we apply the force to relative
     // to the object's center of mass, i.e. Torque = F * r
-    float r = Vector2D::Dot(localContact, Vector2D(mNormal.Y, -mNormal.X));
+    float r = Vector2D::Dot(localContact, Vector2D(mLocalUp.Y, -mLocalUp.X));
 
     // "Effective mass" - combination of moment of inertia and mass,
     // tells us contact points' velocity change from the applied force
@@ -48,14 +46,14 @@ void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 
     float j = -(1 + elasticity) * velocityIntoPlane * mass0;
 
-    Vector2D force = mNormal * j;
+    Vector2D force = mLocalUp * j;
 
-    _otherObject->ApplyForce(force, _collisionInfo.collisionPoints[0] - _otherObject->GetPosition());
+    _otherObject->ApplyForce(force, localContact);
 
     if (_collisionInfo.penetration > 0.f)
     {
-        ApplyContactForces(_otherObject, mNormal, _collisionInfo.penetration);
+        ApplyContactForces(_otherObject, mLocalUp, _collisionInfo.penetration);
     }
 
-    _collisionInfo.normal = mNormal;
+    _collisionInfo.normal = mLocalUp;
 }

@@ -10,10 +10,10 @@ CircleCollider* circle1 = new CircleCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2
 CircleCollider* circle2 = new CircleCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 5, 1.f);
 CircleCollider* circle3 = new CircleCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 1, 0.5f);
 
-PlaneCollider* plane1 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20, Vector2D(1, 0), 6.f);
-PlaneCollider* plane2 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20, Vector2D(-1, 0), 6.f);
-PlaneCollider* plane3 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20, Vector2D(0, 1), 10.f);
-PlaneCollider* plane4 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20, Vector2D(0, -1), 10.f);
+PlaneCollider* plane1 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20.f, 6.f, 90.f);
+PlaneCollider* plane2 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20.f, 6.f, 270.f);
+PlaneCollider* plane3 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20.f, 10.f, 0.f);
+PlaneCollider* plane4 = new PlaneCollider(Vector2D(SCREEN_W / 2, SCREEN_H / 2), 20.f, 10.f, 180.f);
 
 Camera2D camera = { 0 };
 const Color BG_COLOR = { 50, 50, 50, 255 };
@@ -99,6 +99,7 @@ void Update(float _deltaSeconds)
     // CIRCLE 1
     if (circle1->CheckCollision(plane1, collInfo))
     {
+        circle1->CheckCollision(plane1, collInfo);
         plane1->ResolveCollision(circle1, collInfo);
     }
 
@@ -191,20 +192,24 @@ Vector2 ConvertVector2D(Vector2D _vec)
 void DrawCircleObject(CircleCollider* _circle, Color _color)
 {
     float radius = _circle->GetRadius();
-    Vector2 pos = ConvertVector2D(_circle->GetPosition());
-    Vector2 facing = ConvertVector2D(-Vector2D::AngleToUnitVector(_circle->GetRotation()) * radius + _circle->GetPosition());
+    Vector2D pos = _circle->GetPosition();
+    Vector2D up = _circle->GetLocalUp();
 
-    DrawCircleV(pos, radius, _color);
-    DrawLineEx(pos, facing, radius * 0.15f, BLACK);
+    Vector2 start = ConvertVector2D(pos);
+    Vector2 end = ConvertVector2D(pos - up * radius);
+
+    DrawCircleV(start, radius, _color);
+    DrawLineEx(start, end, radius * 0.15f, BLACK);
 }
 
 void DrawPlaneObject(PlaneCollider* _plane, Color _color)
 {
-    float planeHalfExtent = _plane->GetHalfExtent();
-    Vector2D planeCenter = _plane->GetPosition();
-    Vector2D adjFacing = (Vector2D(_plane->GetNormal().Y, -_plane->GetNormal().X)).Normalize();
-    Vector2 start = ConvertVector2D(planeCenter - adjFacing * planeHalfExtent);
-    Vector2 end = ConvertVector2D(planeCenter + adjFacing * planeHalfExtent);
+    float halfExtent = _plane->GetHalfExtent();
+    Vector2D pos = _plane->GetPosition();
+    Vector2D right = _plane->GetLocalRight();
+
+    Vector2 start = ConvertVector2D(pos - right * halfExtent);
+    Vector2 end = ConvertVector2D(pos + right * halfExtent);
 
     DrawLineEx(start, end, 0.1f, _color);
 }
