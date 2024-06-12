@@ -152,13 +152,15 @@ void PhysicsObject::UpdateLocalAxes()
 
 void PhysicsObject::RegisterCollisionChecks()
 {
-	//			PLANE	CIRCLE
+	//			PLANE	CIRCLE	BOX
 	// PLANE
 	// CIRCLE
+	// BOX
 
 	mCollisionChecks = {
-		&PhysicsObject::Plane2Plane, &PhysicsObject::Circle2Plane,
-		&PhysicsObject::Plane2Circle, &PhysicsObject::Circle2Circle
+		&PhysicsObject::Plane2Plane,	&PhysicsObject::Circle2Plane,	&PhysicsObject::Box2Plane,
+		&PhysicsObject::Plane2Circle,	&PhysicsObject::Circle2Circle,	&PhysicsObject::Box2Circle,
+		&PhysicsObject::Plane2Box,		&PhysicsObject::Circle2Box,		&PhysicsObject::Box2Box,
 	};
 }
 
@@ -197,6 +199,11 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 	return false;
 }
 
+bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, CollisionInfo& _collisionInfo)
+{
+	return false; // TODO
+}
+
 bool PhysicsObject::Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo)
 {
 	return Circle2Plane(_circle, _plane, _collisionInfo);
@@ -225,5 +232,21 @@ bool PhysicsObject::Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circl
 	}
 
 	return false;
+}
+bool PhysicsObject::Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, CollisionInfo& _collisionInfo)
+{
+	return false; // TODO
+}
+bool PhysicsObject::Plane2Box(PhysicsObject* _plane, PhysicsObject* _box, CollisionInfo& _collisionInfo)
+{
+	return Box2Plane(_box, _plane, _collisionInfo);
+}
+bool PhysicsObject::Circle2Box(PhysicsObject* _circle, PhysicsObject* _box, CollisionInfo& _collisionInfo)
+{
+	return Box2Circle(_box, _circle, _collisionInfo);
+}
+bool PhysicsObject::Box2Box(PhysicsObject* _box1, PhysicsObject* _box2, CollisionInfo& _collisionInfo)
+{
+	return false; // TODO
 }
 #pragma endregion

@@ -9,6 +9,7 @@ enum PHYSICS_API ColliderType
 	UNKNOWN = -1,
 	PLANE,
 	CIRCLE,
+	BOX,
 
 	COLLIDER_TYPE_MAX
 };
@@ -72,8 +73,13 @@ protected:
 
 	bool Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo);
 	bool Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
+	bool Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
 	bool Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
 	bool Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circle2, CollisionInfo& _collisionInfo);
+	bool Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
+	bool Plane2Box(PhysicsObject* _plane, PhysicsObject* _box, CollisionInfo& _collisionInfo);
+	bool Circle2Box(PhysicsObject* _circle, PhysicsObject* _box, CollisionInfo& _collisionInfo);
+	bool Box2Box(PhysicsObject* _box1, PhysicsObject* _box2, CollisionInfo& _collisionInfo);
 
 protected:
 	typedef bool (PhysicsObject::* CollisionCheck)(PhysicsObject*, PhysicsObject*, CollisionInfo&);

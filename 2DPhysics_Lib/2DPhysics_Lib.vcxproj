@@ -154,6 +154,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="CircleCollider.h" />
     <ClInclude Include="DLLCommon.h" />
     <ClInclude Include="Maths.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PlaneCollider.cpp" />
