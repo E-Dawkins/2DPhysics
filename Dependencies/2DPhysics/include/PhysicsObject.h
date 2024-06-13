@@ -60,7 +60,7 @@ public:
 	void SetPosition(const Vector2D _position)				{ mPosition = _position; }
 	void SetVelocity(const Vector2D _velocity)				{ mVelocity = _velocity; }
 	void SetMass(const float _mass)							{ mMass = _mass; }
-	void SetRotationDegrees(const float _rotation)			{ mRotation = Physics2D::Deg2Rad(_rotation); }
+	void SetRotationDegrees(const float _rotation);
 	void SetElasticity(const float _elasticity)				{ mElasticity = _elasticity; }
 	void SetMoment(const float _moment)						{ mMoment = _moment; }
 	void SetAngularVelocity(const float _angularVelocity)	{ mAngularVelocity = _angularVelocity; }
@@ -68,7 +68,6 @@ public:
 
 protected:
 	void UpdateLocalAxes();
-
 	void RegisterCollisionChecks();
 
 	bool Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo);

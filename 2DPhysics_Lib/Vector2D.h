@@ -21,6 +21,9 @@ public:
 	Vector2D operator / (float _rhs);
 	Vector2D& operator /= (float _rhs);
 
+	bool operator == (Vector2D _other);
+	bool operator != (Vector2D _other);
+
 	float Magnitude();
 	float AbsMagnitude();
 

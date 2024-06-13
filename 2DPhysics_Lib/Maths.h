@@ -16,6 +16,14 @@ namespace Physics2D
 		return _point - dn;
 	}
 
+	static Vector2D ProjectPointOnVector(Vector2D _point, Vector2D _vector)
+	{
+		float dotProduct = Vector2D::Dot(_point, _vector);
+		float vectorSquared = Vector2D::Dot(_vector, _vector);
+
+		return (dotProduct / vectorSquared) * _vector;
+	}
+
 	static float Deg2Rad(float _angleInDeg)
 	{
 		return _angleInDeg * (pi / 180.f);

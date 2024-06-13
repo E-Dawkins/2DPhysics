@@ -10,6 +10,7 @@ public:
 
 	// Getters
 	const float GetHalfExtent() const		{ return mHalfExtent; }
+	const Vector2D GetNormal() const		{ return GetLocalUp(); }
 
 	// Setters
 	void SetHalfExtent(float& _halfExtent)	{ mHalfExtent = _halfExtent; }

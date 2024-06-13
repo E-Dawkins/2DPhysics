@@ -74,6 +74,16 @@ Vector2D& Vector2D::operator/=(float _rhs)
 	return *this;
 }
 
+bool Vector2D::operator==(Vector2D _other)
+{
+	return X == _other.X && Y == _other.Y;
+}
+
+bool Vector2D::operator!=(Vector2D _other)
+{
+	return !(*this == _other);
+}
+
 float Vector2D::Magnitude()
 {
 	float x2 = X * X;

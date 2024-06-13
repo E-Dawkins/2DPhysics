@@ -2,6 +2,7 @@
 
 #include "CircleCollider.h"
 #include "PlaneCollider.h"
+#include "BoxCollider.h"
 
 #include "Maths.h"
 
@@ -16,7 +17,6 @@ PhysicsObject::PhysicsObject()
 {
 	SetRotationDegrees(0.f);
 	UpdateLocalAxes();
-
 	RegisterCollisionChecks();
 }
 
@@ -31,7 +31,6 @@ PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
 {
 	SetRotationDegrees(_rotation);
 	UpdateLocalAxes();
-
 	RegisterCollisionChecks();
 }
 
@@ -142,6 +141,12 @@ void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, Vector2D _no
 		_otherObject->mPosition += (1.f - factor1) * _normal * _penetration;
 }
 
+void PhysicsObject::SetRotationDegrees(const float _rotation)
+{ 
+	mRotation = Physics2D::Deg2Rad(_rotation);
+	UpdateLocalAxes();
+}
+
 void PhysicsObject::UpdateLocalAxes()
 {
 	mLastRotation = mRotation;
@@ -177,14 +182,14 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 
 	Vector2D planeToCircle = circle->mPosition - plane->mPosition;
 	
-	float distFromSurface = Vector2D::Dot(planeToCircle, plane->GetLocalUp());
-	float velDirection = Vector2D::Dot(circle->GetVelocity(), plane->GetLocalUp());
+	float distFromSurface = std::abs(Vector2D::Dot(planeToCircle, plane->GetNormal()));
+	float velDirection = Vector2D::Dot(circle->GetVelocity(), plane->GetNormal());
 
 	// Circle is within collision distance of infinite planes' surface
 	// and moving towards plane's surface
 	if (distFromSurface <= circle->GetRadius() && velDirection < 0.f)
 	{
-		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetLocalUp());
+		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
 		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane) - circle->GetRadius();
 
 		if (distFromCenter <= plane->GetHalfExtent())
@@ -201,7 +206,17 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 
 bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, CollisionInfo& _collisionInfo)
 {
-	return false; // TODO
+	BoxCollider* box = static_cast<BoxCollider*>(_box);
+	PlaneCollider* plane = static_cast<PlaneCollider*>(_plane);
+
+	float vDot = Vector2D::Dot(box->GetVelocity(), plane->GetNormal());
+
+	if (vDot > 0.f) // Box is moving away from plane, can't collide
+		return false;
+
+	// check if any point of the box is on the other side of plane's normal
+
+	return false;
 }
 
 bool PhysicsObject::Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo)
