@@ -8,21 +8,21 @@ public:
 	Vector2D(float _x, float _y);
 	Vector2D(const Vector2D& _other);
 
-	PHYSICS_API friend Vector2D operator + (Vector2D _lhs, Vector2D _rhs);
-	Vector2D& operator += (Vector2D _rhs);
+	PHYSICS_API friend const Vector2D operator + (const Vector2D& _lhs, const Vector2D& _rhs);
+	Vector2D& operator += (const Vector2D& _rhs);
 
-	Vector2D operator - (Vector2D _lhs);
-	Vector2D& operator -= (Vector2D _rhs);
-	Vector2D operator - ();
+	PHYSICS_API friend const Vector2D operator - (const Vector2D& _lhs, const Vector2D& _rhs);
+	Vector2D& operator -= (const Vector2D& _rhs);
+	Vector2D operator - () const;
 
-	Vector2D operator * (float _rhs);
-	PHYSICS_API friend Vector2D operator * (float _lhs, Vector2D _rhs);
+	const Vector2D operator * (const float& _rhs) const;
+	PHYSICS_API friend const Vector2D operator * (const float& _lhs, const Vector2D& _rhs);
 
-	Vector2D operator / (float _rhs);
-	Vector2D& operator /= (float _rhs);
+	const Vector2D operator / (const float& _rhs) const;
+	Vector2D& operator /= (const float& _rhs);
 
-	bool operator == (Vector2D _other);
-	bool operator != (Vector2D _other);
+	const bool operator == (const Vector2D& _other) const;
+	const bool operator != (const Vector2D& _other) const;
 
 	float Magnitude();
 	float AbsMagnitude();
@@ -45,6 +45,12 @@ public:
 	static float Distance(const Vector2D& _vec1, const Vector2D& _vec2);
 
 	static Vector2D PerpendicularVector(const Vector2D& _vec);
+
+	// Negates this Vector2D
+	Vector2D& Negate();
+
+	// Creates a negated copy of the passed in Vector2D
+	static Vector2D Negated(Vector2D& _toNegate);
 
 public:
 	float X;

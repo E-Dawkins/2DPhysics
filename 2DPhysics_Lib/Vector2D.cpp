@@ -20,66 +20,63 @@ Vector2D::Vector2D(const Vector2D& _other)
 	Y = _other.Y;
 }
 
-Vector2D operator+(Vector2D _lhs, Vector2D _rhs)
+const Vector2D operator+(const Vector2D& _lhs, const Vector2D& _rhs)
 {
 	return Vector2D(_lhs.X + _rhs.X, _lhs.Y + _rhs.Y);
 }
 
-Vector2D& Vector2D::operator+=(Vector2D _rhs)
+Vector2D& Vector2D::operator+=(const Vector2D& _rhs)
 {
 	this->X += _rhs.X;
 	this->Y += _rhs.Y;
 	return *this;
 }
 
-Vector2D Vector2D::operator-(Vector2D _lhs)
+const Vector2D operator-(const Vector2D& _lhs, const Vector2D& _rhs)
 {
-	Vector2D out;
-	out.X = X - _lhs.X;
-	out.Y = Y - _lhs.Y;
-	return out;
+	return Vector2D(_lhs.X - _rhs.X, _lhs.Y - _rhs.Y);
 }
 
-Vector2D& Vector2D::operator-=(Vector2D _rhs)
+Vector2D& Vector2D::operator-=(const Vector2D& _rhs)
 {
 	this->X -= _rhs.X;
 	this->Y -= _rhs.Y;
 	return *this;
 }
 
-Vector2D Vector2D::operator-()
+Vector2D Vector2D::operator-() const
 {
 	return Vector2D(-X, -Y);
 }
 
-Vector2D Vector2D::operator*(float _rhs)
+const Vector2D Vector2D::operator*(const float& _rhs) const
 {
 	return Vector2D(X * _rhs, Y * _rhs);
 }
 
-Vector2D operator*(float _lhs, Vector2D _rhs)
+const Vector2D operator*(const float& _lhs, const Vector2D& _rhs)
 {
 	return Vector2D(_lhs * _rhs.X, _lhs * _rhs.Y);
 }
 
-Vector2D Vector2D::operator/(float _rhs)
+const Vector2D Vector2D::operator/(const float& _rhs) const
 {
 	return Vector2D(X / _rhs, Y / _rhs);
 }
 
-Vector2D& Vector2D::operator/=(float _rhs)
+Vector2D& Vector2D::operator/=(const float& _rhs)
 {
 	this->X /= _rhs;
 	this->Y /= _rhs;
 	return *this;
 }
 
-bool Vector2D::operator==(Vector2D _other)
+const bool Vector2D::operator==(const Vector2D& _other) const
 {
 	return X == _other.X && Y == _other.Y;
 }
 
-bool Vector2D::operator!=(Vector2D _other)
+const bool Vector2D::operator!=(const Vector2D& _other) const
 {
 	return !(*this == _other);
 }
@@ -151,4 +148,16 @@ float Vector2D::Distance(const Vector2D& _vec1, const Vector2D& _vec2)
 Vector2D Vector2D::PerpendicularVector(const Vector2D& _vec)
 {
 	return Vector2D(_vec.Y, -_vec.X);
+}
+
+Vector2D& Vector2D::Negate()
+{
+	X = -X;
+	Y = -Y;
+	return *this;
+}
+
+Vector2D Vector2D::Negated(Vector2D& _toNegate)
+{
+	return Vector2D(-_toNegate.X, -_toNegate.Y);
 }
