@@ -4,7 +4,7 @@ BoxCollider::BoxCollider()
 	: PhysicsObject()
 	, mHalfExtents(1, 1)
 {
-	mMoment = (1.f / 12.f) * GetMass() * (mHalfExtents.X * mHalfExtents.X + mHalfExtents.Y * mHalfExtents.Y);
+	mMoment = (1.f / 12.f) * GetMass() * (mHalfExtents.X * 2.f + mHalfExtents.Y * 2.f);
 	mColliderType = BOX;
 
 	UpdatePoints();
@@ -14,7 +14,7 @@ BoxCollider::BoxCollider(Vector2D _position, float _mass, Vector2D _halfExtents,
 	: PhysicsObject(_position, _mass, _rotation)
 	, mHalfExtents(_halfExtents)
 {
-	mMoment = (1.f / 12.f) * GetMass() * (mHalfExtents.X * mHalfExtents.X + mHalfExtents.Y * mHalfExtents.Y);
+	mMoment = (1.f / 12.f) * GetMass() * (mHalfExtents.X * 2.f + mHalfExtents.Y * 2.f);
 	mColliderType = BOX;
 
 	UpdatePoints();

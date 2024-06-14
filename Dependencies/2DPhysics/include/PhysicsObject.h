@@ -21,7 +21,7 @@ struct PHYSICS_API CollisionInfo
 	CollisionInfo()
 	{
 		collisionPoints = {};
-		penetration = 0.f;
+		penetration = FLT_MAX;
 		normal = Vector2D(0, 0);
 	}
 
@@ -39,6 +39,7 @@ public:
 	void Update(float _deltaSeconds);
 	bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
+	void ResolveCollision2(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
 	void ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration);
@@ -48,11 +49,11 @@ public:
 	const Vector2D GetVelocity() const				{ return mVelocity; }
 	const Vector2D GetLocalRight() const			{ return mLocalRight; }
 	const Vector2D GetLocalUp() const				{ return mLocalUp; }
-	const float GetMass() const						{ return mMass; }
+	const float GetMass() const						{ return mKinematic ? FLT_MAX : mMass; }
 	const float GetRotation() const					{ return mRotation; }
 	const float GetRotationDegrees() const			{ return Physics2D::Rad2Deg(mRotation); }
 	const float GetElasticity() const				{ return mElasticity; }
-	const float GetMoment() const					{ return mMoment; }
+	const float GetMoment() const					{ return mKinematic ? FLT_MAX : mMoment; }
 	const float GetAngularVelocity() const			{ return mAngularVelocity; }
 	const bool IsKinematic() const					{ return mKinematic; }
 

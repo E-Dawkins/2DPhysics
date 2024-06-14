@@ -1,6 +1,8 @@
 #pragma once
 #include "DLLCommon.h"
 
+#include <iosfwd> // contains forward declaration for std::ostream
+
 class PHYSICS_API Vector2D
 {
 public:
@@ -23,6 +25,8 @@ public:
 
 	const bool operator == (const Vector2D& _other) const;
 	const bool operator != (const Vector2D& _other) const;
+
+	PHYSICS_API friend std::ostream& operator << (std::ostream& os, const Vector2D& _vec);
 
 	float Magnitude();
 	float AbsMagnitude();

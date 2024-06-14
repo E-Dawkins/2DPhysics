@@ -1,6 +1,7 @@
 #include "Vector2D.h"
 
 #include "Maths.h"
+#include <iostream>
 
 Vector2D::Vector2D()
 {
@@ -79,6 +80,11 @@ const bool Vector2D::operator==(const Vector2D& _other) const
 const bool Vector2D::operator!=(const Vector2D& _other) const
 {
 	return !(*this == _other);
+}
+
+std::ostream& operator << (std::ostream& os, const Vector2D& _vec)
+{
+	return os << _vec.X << "," << _vec.Y;
 }
 
 float Vector2D::Magnitude()

@@ -3,6 +3,8 @@
 #include "PlaneCollider.h"
 #include "BoxCollider.h"
 
+#include <iostream>
+
 #pragma region Variables
 const int SCREEN_W = 960;
 const int SCREEN_H = 540;
@@ -11,16 +13,12 @@ const Color BG_COLOR = { 50, 50, 50, 255 };
 Camera2D camera;
 RenderTexture2D target;
 
-CircleCollider* circle;
-PlaneCollider* plane;
 BoxCollider* box;
 
 PlaneCollider* wallL;
 PlaneCollider* wallR;
 PlaneCollider* wallT;
 PlaneCollider* wallB;
-
-CircleCollider* bouncingBall;
 #pragma endregion
 
 #pragma region FunctionDeclarations
@@ -64,29 +62,17 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    circle = new CircleCollider({ SCREEN_W / 2 + 10, SCREEN_H / 2 }, 1.f, 1.f);
-    plane = new PlaneCollider({ SCREEN_W / 2 - 10, SCREEN_H / 2 }, 1.f, 2.f);
-    box = new BoxCollider({ SCREEN_W / 2, SCREEN_H / 2 }, 1.f, { 1.f, 1.f });
+    box = new BoxCollider({ SCREEN_W / 2, SCREEN_H / 2 }, 1.f, { 1.f, 1.f }, 5.f);
 
     wallB = new PlaneCollider({ SCREEN_W / 2, SCREEN_H / 2 - 9 }, 1.f, 20.f, 0.f);
     wallT = new PlaneCollider({ SCREEN_W / 2, SCREEN_H / 2 + 9 }, 1.f, 20.f, 180.f);
     wallL = new PlaneCollider({ SCREEN_W / 2 - 18, SCREEN_H / 2 }, 1.f, 20.f, 90.f);
     wallR = new PlaneCollider({ SCREEN_W / 2 + 18, SCREEN_H / 2 }, 1.f, 20.f, 270.f);
-
-    bouncingBall = new CircleCollider({ SCREEN_W / 2, SCREEN_H / 2 }, 1.f, 1.f);
 }
 
 void Update(float _deltaSeconds)
 {
-    circle->SetRotationDegrees(circle->GetRotationDegrees() + 30.f * _deltaSeconds);
-    plane->SetRotationDegrees(plane->GetRotationDegrees() + 30.f * _deltaSeconds);
-    box->SetRotationDegrees(box->GetRotationDegrees() + 30.f * _deltaSeconds);
-
-    circle->Update(_deltaSeconds);
-    plane->Update(_deltaSeconds);
     box->Update(_deltaSeconds);
-
-    bouncingBall->Update(_deltaSeconds);
 
     if (GetKeyPressed() == KEY_SPACE)
     {
@@ -94,30 +80,23 @@ void Update(float _deltaSeconds)
     }
 
     CollisionInfo collInfo;
-    if (bouncingBall->CheckCollision(wallB, collInfo))
+    if (box->CheckCollision(wallB, collInfo))
     {
-        wallB->ResolveCollision(bouncingBall, collInfo);
+        box->ResolveCollision(wallB, collInfo);
+    }
+    collInfo = {};
+    if (box->CheckCollision(wallT, collInfo))
+    {
+        box->ResolveCollision(wallT, collInfo);
     }
 
-    if (bouncingBall->CheckCollision(wallT, collInfo))
-    {
-        wallT->ResolveCollision(bouncingBall, collInfo);
-    }
 
-    if (bouncingBall->CheckCollision(wallL, collInfo))
-    {
-        wallL->ResolveCollision(bouncingBall, collInfo);
-    }
-
-    if (bouncingBall->CheckCollision(wallR, collInfo))
-    {
-        wallR->ResolveCollision(bouncingBall, collInfo);
-    }
-
-    if (bouncingBall->CheckCollision(plane, collInfo))
-    {
-        plane->ResolveCollision(bouncingBall, collInfo);
-    }
+    std::cout << "[=================================================]" << std::endl;
+    std::cout << "Box Velocity: " << box->GetVelocity() << std::endl;
+    std::cout << "Box Angular Velocity: " << box->GetAngularVelocity() << std::endl;
+    std::cout << "Contact Points: " << collInfo.collisionPoints.size() << std::endl;
+    std::cout << "Penetration: " << collInfo.penetration << std::endl;
+    std::cout << "[=================================================]" << std::endl;
 }
 
 void Draw()
@@ -135,16 +114,10 @@ void Draw()
 
             BeginMode2D(camera);
             {
-                DrawCircleObject(circle, BLUE);
-                DrawPlaneObject(plane, YELLOW);
                 DrawBoxObject(box, RED);
 
                 DrawPlaneObject(wallB, YELLOW);
                 DrawPlaneObject(wallT, YELLOW);
-                DrawPlaneObject(wallL, YELLOW);
-                DrawPlaneObject(wallR, YELLOW);
-
-                DrawCircleObject(bouncingBall, GREEN);
             }
             EndMode2D();
         }
@@ -195,13 +168,12 @@ void DrawBoxObject(BoxCollider* _box, Color _color)
     Rectangle rect  = { position.X, position.Y, halfExtents.X * 2.f, halfExtents.Y * 2.f };
     Rectangle rect2 = { position.X, position.Y, halfExtents.X * 0.2f, halfExtents.Y };
 
-    DrawRectanglePro(rect, { halfExtents.X, halfExtents.Y }, -_box->GetRotationDegrees(), _color);
-    DrawRectanglePro(rect2, { rect2.width / 2, 0 }, -_box->GetRotationDegrees(), BLACK);
+    const auto points = _box->GetPoints();
 
-    for (Vector2D pt : _box->GetPoints())
-    {
-        DrawCircleV(ConvertVector2D(pt), 0.1f, PINK);
-    }
+    DrawLineEx(ConvertVector2D(points[0]), ConvertVector2D(points[1]), 0.1f, _color);
+    DrawLineEx(ConvertVector2D(points[1]), ConvertVector2D(points[3]), 0.1f, _color);
+    DrawLineEx(ConvertVector2D(points[2]), ConvertVector2D(points[0]), 0.1f, _color);
+    DrawLineEx(ConvertVector2D(points[3]), ConvertVector2D(points[2]), 0.1f, _color);
 }
 
 void StartPhysicsSim()
@@ -213,6 +185,7 @@ void StartPhysicsSim()
 
     started = true;
 
-    bouncingBall->SetVelocity(Vector2D::AngleToUnitVector(130.f) * 10.f);
+    //box->SetVelocity(Vector2D::AngleToUnitVector(30.f) * 5.f);
+    box->SetVelocity({0, -3});
 }
 #pragma endregion
