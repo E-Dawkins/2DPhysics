@@ -39,7 +39,6 @@ public:
 	void Update(float _deltaSeconds);
 	bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
-	void ResolveCollision2(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
 	void ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration);

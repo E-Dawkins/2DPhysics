@@ -225,11 +225,6 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 	BoxCollider* box = static_cast<BoxCollider*>(_box);
 	PlaneCollider* plane = static_cast<PlaneCollider*>(_plane);
 
-	float vDot = Vector2D::Dot(box->GetVelocity(), plane->GetNormal());
-
-	if (vDot > 0.f) // Box is moving away from plane, can't collide
-		return false;
-
 	// Check if any point of the box is on the other side of plane's normal
 	const auto points = box->GetPoints();
 
@@ -240,7 +235,13 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 		Vector2D planeToPoint = pt - plane->GetPosition();
 		float distFromPlane = Vector2D::Dot(planeToPoint, plane->GetNormal());
 
-		if (distFromPlane < 0.f)
+		Vector2D localContact = pt - mPosition;
+		Vector2D relativeVel = mVelocity + mAngularVelocity
+			* Vector2D(-localContact.Y, localContact.X);
+		float velocityIntoPlane = Vector2D::Dot(relativeVel, plane->GetNormal());
+
+		// The point is behind the plane, and moving towards the plane
+		if (distFromPlane < 0.f && velocityIntoPlane < 0.f)
 		{
 			_collisionInfo.collisionPoints.push_back(pt);
 			

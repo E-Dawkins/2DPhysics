@@ -57,46 +57,30 @@ void Begin()
 {
     camera = { 0 };
     camera.zoom = 25;
-    camera.target = { SCREEN_W / 2, SCREEN_H / 2 };
+    camera.target = { 0, 0 };
     camera.offset = { SCREEN_W / 2, SCREEN_H / 2 };
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    box = new BoxCollider({ SCREEN_W / 2, SCREEN_H / 2 }, 1.f, { 1.f, 1.f }, 5.f);
+    box = new BoxCollider({ 0, 0 }, 1.f, { 1.f, 1.f }, 50.f);
 
-    wallB = new PlaneCollider({ SCREEN_W / 2, SCREEN_H / 2 - 9 }, 1.f, 20.f, 0.f);
-    wallT = new PlaneCollider({ SCREEN_W / 2, SCREEN_H / 2 + 9 }, 1.f, 20.f, 180.f);
-    wallL = new PlaneCollider({ SCREEN_W / 2 - 18, SCREEN_H / 2 }, 1.f, 20.f, 90.f);
-    wallR = new PlaneCollider({ SCREEN_W / 2 + 18, SCREEN_H / 2 }, 1.f, 20.f, 270.f);
+    wallB = new PlaneCollider({ 0, -9 }, 1.f, 20.f, 0.f);
+    wallT = new PlaneCollider({ 0,  9 }, 1.f, 20.f, 180.f);
+    wallL = new PlaneCollider({-18, 0 }, 1.f, 20.f, 90.f);
+    wallR = new PlaneCollider({ 18, 0 }, 1.f, 20.f, 270.f);
 }
 
 void Update(float _deltaSeconds)
 {
     box->Update(_deltaSeconds);
 
-    if (GetKeyPressed() == KEY_SPACE)
-    {
-        StartPhysicsSim();
-    }
+    StartPhysicsSim();
 
-    CollisionInfo collInfo;
+    CollisionInfo collInfo = {};
     if (box->CheckCollision(wallB, collInfo))
     {
         box->ResolveCollision(wallB, collInfo);
     }
-    collInfo = {};
-    if (box->CheckCollision(wallT, collInfo))
-    {
-        box->ResolveCollision(wallT, collInfo);
-    }
-
-
-    std::cout << "[=================================================]" << std::endl;
-    std::cout << "Box Velocity: " << box->GetVelocity() << std::endl;
-    std::cout << "Box Angular Velocity: " << box->GetAngularVelocity() << std::endl;
-    std::cout << "Contact Points: " << collInfo.collisionPoints.size() << std::endl;
-    std::cout << "Penetration: " << collInfo.penetration << std::endl;
-    std::cout << "[=================================================]" << std::endl;
 }
 
 void Draw()
