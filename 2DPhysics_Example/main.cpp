@@ -14,6 +14,7 @@ Camera2D camera;
 RenderTexture2D target;
 
 BoxCollider* box;
+CircleCollider* circle;
 
 PlaneCollider* wallL;
 PlaneCollider* wallR;
@@ -62,7 +63,8 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    box = new BoxCollider({ 0, 0 }, 1.f, { 1.f, 1.f }, 50.f);
+    box = new BoxCollider({ 0, 0 }, 1.f, { 1.f, 1.f }, 40.f);
+    circle = new CircleCollider({ 1, 5 }, 1.f, 1.f);
 
     wallB = new PlaneCollider({ 0, -9 }, 1.f, 20.f, 0.f);
     wallT = new PlaneCollider({ 0,  9 }, 1.f, 20.f, 180.f);
@@ -73,13 +75,34 @@ void Begin()
 void Update(float _deltaSeconds)
 {
     box->Update(_deltaSeconds);
+    circle->Update(_deltaSeconds);
 
     StartPhysicsSim();
 
     CollisionInfo collInfo = {};
     if (box->CheckCollision(wallB, collInfo))
     {
-        box->ResolveCollision(wallB, collInfo);
+        wallB->ResolveCollision(box, collInfo);
+    }
+    collInfo = {};
+    if (box->CheckCollision(wallT, collInfo))
+    {
+        wallT->ResolveCollision(box, collInfo);
+    }
+    collInfo = {};
+    if (box->CheckCollision(circle, collInfo))
+    {
+        box->ResolveCollision(circle, collInfo);
+    }
+    collInfo = {};
+    if (circle->CheckCollision(wallB, collInfo))
+    {
+        wallB->ResolveCollision(circle, collInfo);
+    }
+    collInfo = {};
+    if (circle->CheckCollision(wallT, collInfo))
+    {
+        wallT->ResolveCollision(circle, collInfo);
     }
 }
 
@@ -99,6 +122,7 @@ void Draw()
             BeginMode2D(camera);
             {
                 DrawBoxObject(box, RED);
+                DrawCircleObject(circle, BLUE);
 
                 DrawPlaneObject(wallB, YELLOW);
                 DrawPlaneObject(wallT, YELLOW);

@@ -226,7 +226,10 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 	PlaneCollider* plane = static_cast<PlaneCollider*>(_plane);
 
 	// Check if any point of the box is on the other side of plane's normal
-	const auto points = box->GetPoints();
+	const auto& points = box->GetPoints();
+
+	Vector2D contact = Vector2D(0, 0);
+	int numContacts = 0;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -243,18 +246,25 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 		// The point is behind the plane, and moving towards the plane
 		if (distFromPlane < 0.f && velocityIntoPlane < 0.f)
 		{
-			_collisionInfo.collisionPoints.push_back(pt);
+			contact += pt;
+			numContacts++;
 			
 			if (distFromPlane < _collisionInfo.penetration)
 			{
 				_collisionInfo.penetration = std::abs(distFromPlane);
 			}
-
-			_collisionInfo.normal = -plane->GetNormal();
 		}
 	}
 
-	return (_collisionInfo.collisionPoints.size() > 0);
+	if (numContacts > 0)
+	{
+		_collisionInfo.collisionPoints.push_back(contact / (float)numContacts);
+		_collisionInfo.normal = -plane->GetNormal();
+
+		return true;
+	}
+
+	return false;
 }
 
 bool PhysicsObject::Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo)
@@ -288,7 +298,41 @@ bool PhysicsObject::Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circl
 }
 bool PhysicsObject::Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, CollisionInfo& _collisionInfo)
 {
-	return false; // TODO
+	BoxCollider* box = static_cast<BoxCollider*>(_box);
+	CircleCollider* circle = static_cast<CircleCollider*>(_circle);
+
+	Vector2D combinedNormal = Vector2D(0, 0);
+	int numContacts = 0;
+
+	const auto& points = box->GetPoints();
+
+	for (int i = 0; i < 4; i++) // check if any point is within the circle
+	{
+		Vector2D pt = points[i];
+
+		float distBetween = Vector2D::Distance(circle->GetPosition(), pt) - circle->GetRadius();
+
+		if (distBetween <= 0.f)
+		{
+			_collisionInfo.collisionPoints.push_back(pt);
+
+			if (distBetween < _collisionInfo.penetration)
+			{
+				_collisionInfo.penetration = -distBetween;
+
+				combinedNormal += (circle->GetPosition() - pt);
+				numContacts++;
+			}
+		}
+	}
+
+	if (combinedNormal != Vector2D(0, 0))
+	{
+		combinedNormal /= (float)numContacts;
+		_collisionInfo.normal = combinedNormal.Normalize();
+	}
+
+	return (!_collisionInfo.collisionPoints.empty());
 }
 bool PhysicsObject::Plane2Box(PhysicsObject* _plane, PhysicsObject* _box, CollisionInfo& _collisionInfo)
 {
