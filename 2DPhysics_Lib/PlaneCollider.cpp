@@ -52,8 +52,6 @@ void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 
     if (_collisionInfo.penetration > 0.f)
     {
-        ApplyContactForces(_otherObject, mLocalUp, _collisionInfo.penetration);
+        ApplyContactForces(_otherObject, _collisionInfo);
     }
-
-    _collisionInfo.normal = mLocalUp;
 }

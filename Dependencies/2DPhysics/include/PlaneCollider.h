@@ -6,7 +6,7 @@ public:
 	PlaneCollider();
 	PlaneCollider(Vector2D _position, float _mass, float _halfExtent, float _rotation = 0.f);
 
-	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
+	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo) override;
 
 	// Getters
 	const float GetHalfExtent() const		{ return mHalfExtent; }

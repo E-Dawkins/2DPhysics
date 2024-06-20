@@ -38,10 +38,8 @@ public:
 
 	void Update(float _deltaSeconds);
 	bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
-	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
-	void ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration);
 
 	// Getters
 	const Vector2D GetPosition() const				{ return mPosition; }
@@ -55,6 +53,7 @@ public:
 	const float GetMoment() const					{ return mKinematic ? FLT_MAX : mMoment; }
 	const float GetAngularVelocity() const			{ return mAngularVelocity; }
 	const bool IsKinematic() const					{ return mKinematic; }
+	const ColliderType GetColliderType() const		{ return mColliderType; }
 
 	// Setters
 	void SetPosition(const Vector2D _position)				{ mPosition = _position; }
@@ -67,6 +66,9 @@ public:
 	void SetKinematic(const bool _kinematic)				{ mKinematic = _kinematic; }
 
 protected:
+	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
+	void ApplyContactForces(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
+
 	void UpdateLocalAxes();
 	void RegisterCollisionChecks();
 

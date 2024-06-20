@@ -135,7 +135,7 @@ void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 	// Move out of penetration
 	if (_collisionInfo.penetration > 0.f)
 	{
-		ApplyContactForces(_otherObject, normal, _collisionInfo.penetration);
+		ApplyContactForces(_otherObject, _collisionInfo);
 	}
 }
 
@@ -145,16 +145,16 @@ void PhysicsObject::ApplyForce(Vector2D _force, const Vector2D _contact)
 	mAngularVelocity += Vector2D::Cross(_force, _contact) / GetMoment();
 }
 
-void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, Vector2D _normal, float _penetration)
+void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
 {
 	float mass2 = _otherObject->GetMass();
 	float factor1 = mass2 / (GetMass() + mass2);
 
 	if (!mKinematic)
-		mPosition -= factor1 * _normal * _penetration;
+		mPosition -= factor1 * _collisionInfo.normal * _collisionInfo.penetration;
 
 	if (!_otherObject->mKinematic)
-		_otherObject->mPosition += (1.f - factor1) * _normal * _penetration;
+		_otherObject->mPosition += (1.f - factor1) * _collisionInfo.normal * _collisionInfo.penetration;
 }
 
 void PhysicsObject::SetRotationDegrees(const float _rotation)
@@ -212,6 +212,9 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 		{
 			_collisionInfo.collisionPoints.push_back(pointOnPlane);
 			_collisionInfo.penetration = circle->GetRadius() - distFromSurface;
+			_collisionInfo.normal = plane->GetNormal();
+
+			_plane->ResolveCollision(_circle, _collisionInfo);
 
 			return true;
 		}
@@ -259,7 +262,9 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 	if (numContacts > 0)
 	{
 		_collisionInfo.collisionPoints.push_back(contact / (float)numContacts);
-		_collisionInfo.normal = -plane->GetNormal();
+		_collisionInfo.normal = plane->GetNormal();
+
+		plane->ResolveCollision(box, _collisionInfo);
 
 		return true;
 	}
@@ -290,6 +295,8 @@ bool PhysicsObject::Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circl
 		_collisionInfo.collisionPoints.push_back(circle1->mPosition + normal * circle1->GetRadius());
 		_collisionInfo.penetration = penetration;
 		_collisionInfo.normal = normal;
+
+		circle1->ResolveCollision(circle2, _collisionInfo);
 
 		return true;
 	}
@@ -326,13 +333,17 @@ bool PhysicsObject::Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, Coll
 		}
 	}
 
-	if (combinedNormal != Vector2D(0, 0))
+	if (numContacts != 0)
 	{
 		combinedNormal /= (float)numContacts;
 		_collisionInfo.normal = combinedNormal.Normalize();
+
+		box->ResolveCollision(circle, _collisionInfo);
+
+		return true;
 	}
 
-	return (!_collisionInfo.collisionPoints.empty());
+	return false;
 }
 bool PhysicsObject::Plane2Box(PhysicsObject* _plane, PhysicsObject* _box, CollisionInfo& _collisionInfo)
 {
