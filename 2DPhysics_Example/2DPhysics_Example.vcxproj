@@ -24,7 +24,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="App_Box2Circle.h" />
+    <ClInclude Include="App_Box2Plane.h" />
     <ClInclude Include="App_Circle2Circle.h" />
+    <ClInclude Include="App_Circle2Plane.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

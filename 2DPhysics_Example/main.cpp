@@ -2,6 +2,9 @@
 
 #include "App.h"
 #include "App_Circle2Circle.h"
+#include "App_Circle2Plane.h"
+#include "App_Box2Plane.h"
+#include "App_Box2Circle.h"
 
 #pragma region Variables
 const int SCREEN_W = 960;
@@ -47,7 +50,7 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    app = new App_Circle2Circle();
+    app = new App_Box2Circle();
     app->Startup();
 }
 

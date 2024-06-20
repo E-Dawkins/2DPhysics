@@ -29,5 +29,14 @@
     <ClInclude Include="App_Circle2Circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="App_Circle2Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App_Box2Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App_Box2Circle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

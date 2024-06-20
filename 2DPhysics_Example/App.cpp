@@ -29,7 +29,7 @@ void App::Draw()
 		{
 			case CIRCLE: DrawCircleObject(obj.first, obj.second); break;
 			case PLANE: DrawPlaneObject(obj.first, obj.second); break;
-			case BOX: DrawPlaneObject(obj.first, obj.second); break;
+			case BOX: DrawBoxObject(obj.first, obj.second); break;
 
 			default: {} break;
 		}
