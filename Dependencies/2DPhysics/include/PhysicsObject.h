@@ -48,7 +48,7 @@ public:
 	const Vector2D GetLocalUp() const				{ return mLocalUp; }
 	const float GetMass() const						{ return mKinematic ? FLT_MAX : mMass; }
 	const float GetRotation() const					{ return mRotation; }
-	const float GetRotationDegrees() const			{ return Physics2D::Rad2Deg(mRotation); }
+	const float GetRotationDegrees() const			{ return P2D_Maths::Rad2Deg(mRotation); }
 	const float GetElasticity() const				{ return mElasticity; }
 	const float GetMoment() const					{ return mKinematic ? FLT_MAX : mMoment; }
 	const float GetAngularVelocity() const			{ return mAngularVelocity; }

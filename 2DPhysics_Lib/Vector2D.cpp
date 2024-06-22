@@ -139,7 +139,7 @@ Vector2D Vector2D::Cross(const Vector2D& _vec, const float& _s)
 
 Vector2D Vector2D::AngleToUnitVector(const float& _angle)
 {
-	const float radians = Physics2D::Deg2Rad(_angle);
+	const float radians = P2D_Maths::Deg2Rad(_angle);
 	return Vector2D(std::sinf(radians), std::cosf(radians)).Normalize();
 }
 

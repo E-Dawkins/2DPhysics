@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
+    <ClCompile Include="Maths.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PlaneCollider.cpp" />
     <ClCompile Include="Vector2D.cpp" />
