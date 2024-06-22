@@ -7,8 +7,8 @@ class App
 {
 public:
 	virtual void Startup() {}
-	void Update(const float _deltaSeconds);
-	void Draw();
+	virtual void Update(const float _deltaSeconds);
+	virtual void Draw();
 
 protected:
 	void AddObject(PhysicsObject* _obj, Color _color);

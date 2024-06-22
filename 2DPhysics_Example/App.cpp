@@ -15,7 +15,10 @@ void App::Update(const float _deltaSeconds)
 			if (obj.first != obj2.first)
 			{
 				CollisionInfo collInfo = {};
-				obj.first->CheckCollision(obj2.first, collInfo);
+				if (obj.first->CheckCollision(obj2.first, collInfo))
+				{
+					// TODO
+				}
 			}
 		}
 	}

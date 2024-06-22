@@ -38,5 +38,8 @@
     <ClInclude Include="App_Box2Circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="App_ClosestPtOnBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
