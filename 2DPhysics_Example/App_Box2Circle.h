@@ -10,7 +10,7 @@ public:
 	virtual void Startup() override
 	{
 		BoxCollider* box = new BoxCollider({ 5, 0 }, 1, { 1, 1 }, 0);
-		CircleCollider* circle = new CircleCollider({ -5, 0.5 }, 1, 1);
+		CircleCollider* circle = new CircleCollider({ -5, 0.01 }, 1, 1);
 
 		circle->SetVelocity({ 5, 0 });
 

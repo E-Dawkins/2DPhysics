@@ -159,7 +159,7 @@ void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, CollisionInf
 
 void PhysicsObject::SetRotationDegrees(const float _rotation)
 { 
-	mRotation = Physics2D::Deg2Rad(_rotation);
+	mRotation = P2D_Maths::Deg2Rad(_rotation);
 	UpdateLocalAxes();
 }
 
@@ -167,7 +167,7 @@ void PhysicsObject::UpdateLocalAxes()
 {
 	mLastRotation = mRotation;
 
-	mLocalUp = Vector2D::AngleToUnitVector(Physics2D::Rad2Deg(mRotation));
+	mLocalUp = Vector2D::AngleToUnitVector(P2D_Maths::Rad2Deg(mRotation));
 	mLocalRight = Vector2D::PerpendicularVector(mLocalUp).Normalize();
 }
 
@@ -205,7 +205,7 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 	// and moving towards plane's surface
 	if (distFromSurface <= circle->GetRadius() && velDirection < 0.f)
 	{
-		Vector2D pointOnPlane = Physics2D::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
+		Vector2D pointOnPlane = P2D_Maths::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
 		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane) - circle->GetRadius();
 
 		if (distFromCenter <= plane->GetHalfExtent())
@@ -214,7 +214,7 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 			_collisionInfo.penetration = circle->GetRadius() - distFromSurface;
 			_collisionInfo.normal = plane->GetNormal();
 
-			_plane->ResolveCollision(_circle, _collisionInfo);
+			plane->ResolveCollision(circle, _collisionInfo);
 
 			return true;
 		}
@@ -308,37 +308,23 @@ bool PhysicsObject::Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, Coll
 	BoxCollider* box = static_cast<BoxCollider*>(_box);
 	CircleCollider* circle = static_cast<CircleCollider*>(_circle);
 
-	Vector2D combinedNormal = Vector2D(0, 0);
-	int numContacts = 0;
+	Vector2D circlePos = circle->GetPosition();
 
-	const auto& points = box->GetPoints();
+	Vector2D ptOnBox = P2D_Maths::ClosestPointOnBox(circlePos, box->GetPosition(),
+		box->GetHalfExtents(), box->GetLocalUp(), box->GetLocalRight());
 
-	for (int i = 0; i < 4; i++) // check if any point is within the circle
+	float distToPt = Vector2D::Distance(circlePos, ptOnBox);
+	float circleRadius = circle->GetRadius();
+
+	if (distToPt <= circleRadius)
 	{
-		Vector2D pt = points[i];
+		_collisionInfo.collisionPoints.push_back(ptOnBox);
+		_collisionInfo.penetration = circleRadius - distToPt;
 
-		float distBetween = Vector2D::Distance(circle->GetPosition(), pt) - circle->GetRadius();
+		Vector2D circleToPt = ptOnBox - circlePos;
+		_collisionInfo.normal = circleToPt.Normalize();
 
-		if (distBetween <= 0.f)
-		{
-			_collisionInfo.collisionPoints.push_back(pt);
-
-			if (distBetween < _collisionInfo.penetration)
-			{
-				_collisionInfo.penetration = -distBetween;
-
-				combinedNormal += (circle->GetPosition() - pt);
-				numContacts++;
-			}
-		}
-	}
-
-	if (numContacts != 0)
-	{
-		combinedNormal /= (float)numContacts;
-		_collisionInfo.normal = combinedNormal.Normalize();
-
-		box->ResolveCollision(circle, _collisionInfo);
+		circle->ResolveCollision(box, _collisionInfo);
 
 		return true;
 	}
