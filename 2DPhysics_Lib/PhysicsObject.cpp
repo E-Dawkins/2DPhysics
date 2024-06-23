@@ -330,6 +330,31 @@ bool PhysicsObject::Circle2Box(PhysicsObject* _circle, PhysicsObject* _box, Coll
 }
 bool PhysicsObject::Box2Box(PhysicsObject* _box1, PhysicsObject* _box2, CollisionInfo& _collisionInfo)
 {
-	return false; // TODO
+	BoxCollider* box1 = static_cast<BoxCollider*>(_box1);
+	BoxCollider* box2 = static_cast<BoxCollider*>(_box2);
+
+	Vector2D contact = { 0, 0 }, normal = { 0, 0 };
+	int numContacts = 0;
+	float pen = FLT_MAX;
+
+	box1->CheckBoxCorners(box2, contact, numContacts, pen, normal);
+
+	if (box2->CheckBoxCorners(box1, contact, numContacts, pen, normal))
+	{
+		normal = -normal;
+	}
+
+	if (contact != Vector2D(0, 0))
+	{
+		_collisionInfo.collisionPoints.push_back(contact / (float)numContacts);
+		_collisionInfo.normal = normal;
+		_collisionInfo.penetration = pen;
+
+		box1->ResolveCollision(box2, _collisionInfo);
+
+		return true;
+	}
+
+	return false;
 }
 #pragma endregion

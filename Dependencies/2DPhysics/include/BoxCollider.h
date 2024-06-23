@@ -7,6 +7,8 @@ public:
 	BoxCollider();
 	BoxCollider(Vector2D _position, float _mass, Vector2D _halfExtents, float _rotation = 0.f);
 
+	bool CheckBoxCorners(BoxCollider* _otherBox, Vector2D& _contact, int& _numContacts, float& _pen, Vector2D& _normal);
+
 	// Getters
 	const Vector2D GetHalfExtents() const				{ return mHalfExtents; }
 	const std::array<Vector2D, 4> GetPoints();
