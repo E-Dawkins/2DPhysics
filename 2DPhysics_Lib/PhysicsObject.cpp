@@ -211,9 +211,6 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 		if (distFromCenter <= plane->GetHalfExtent())
 		{
 			_collisionInfo.collisionPoints.push_back(pointOnPlane);
-			_collisionInfo.penetration = circle->GetRadius() - distFromSurface;
-			_collisionInfo.normal = plane->GetNormal();
-
 			plane->ResolveCollision(circle, _collisionInfo);
 
 			return true;
@@ -228,12 +225,11 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 	BoxCollider* box = static_cast<BoxCollider*>(_box);
 	PlaneCollider* plane = static_cast<PlaneCollider*>(_plane);
 
-	// Check if any point of the box is on the other side of plane's normal
-	const auto& points = box->GetPoints();
-
 	Vector2D contact = Vector2D(0, 0);
 	int numContacts = 0;
 
+	// Check if any point of the box is on the other side of plane's normal
+	const auto& points = box->GetPoints();
 	for (int i = 0; i < 4; i++)
 	{
 		Vector2D pt = points[i];
@@ -241,8 +237,8 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 		Vector2D planeToPoint = pt - plane->GetPosition();
 		float distFromPlane = Vector2D::Dot(planeToPoint, plane->GetNormal());
 
-		Vector2D localContact = pt - mPosition;
-		Vector2D relativeVel = mVelocity + mAngularVelocity
+		Vector2D localContact = pt - box->GetPosition();
+		Vector2D relativeVel = box->GetVelocity() + box->GetAngularVelocity()
 			* Vector2D(-localContact.Y, localContact.X);
 		float velocityIntoPlane = Vector2D::Dot(relativeVel, plane->GetNormal());
 
@@ -251,19 +247,12 @@ bool PhysicsObject::Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, Collis
 		{
 			contact += pt;
 			numContacts++;
-			
-			if (distFromPlane < _collisionInfo.penetration)
-			{
-				_collisionInfo.penetration = std::abs(distFromPlane);
-			}
 		}
 	}
 
 	if (numContacts > 0)
 	{
 		_collisionInfo.collisionPoints.push_back(contact / (float)numContacts);
-		_collisionInfo.normal = plane->GetNormal();
-
 		plane->ResolveCollision(box, _collisionInfo);
 
 		return true;

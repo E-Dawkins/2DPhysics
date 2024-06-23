@@ -5,6 +5,7 @@
 #include "App_Circle2Plane.h"
 #include "App_Box2Plane.h"
 #include "App_Box2Circle.h"
+#include "App_ClosestPtOnBox.h"
 
 #pragma region Variables
 const int SCREEN_W = 960;
@@ -50,7 +51,7 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    app = new App_Box2Circle();
+    app = new App_Box2Plane();
     app->Startup();
 }
 

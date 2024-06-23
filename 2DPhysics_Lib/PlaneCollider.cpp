@@ -50,8 +50,13 @@ void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 
     _otherObject->ApplyForce(force, localContact);
 
+    // The penetration is simply the dot product of the contact point and the planes' normal then
+    // subtracting the distance from the world origin, i.e. the dot product of the position and the normal.
+    _collisionInfo.penetration = -(Vector2D::Dot(_collisionInfo.collisionPoints[0], mLocalUp) - Vector2D::Dot(mPosition, mLocalUp));
     if (_collisionInfo.penetration > 0.f)
     {
         ApplyContactForces(_otherObject, _collisionInfo);
     }
+
+    _collisionInfo.normal = mLocalUp;
 }
