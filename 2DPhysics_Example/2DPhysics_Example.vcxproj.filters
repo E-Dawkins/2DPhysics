@@ -44,5 +44,11 @@
     <ClInclude Include="App_Box2Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="App_AllPhysicsObjs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App_ProjectPtOnPlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
