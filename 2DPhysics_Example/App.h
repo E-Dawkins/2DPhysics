@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <vector>
 #include <raylib.h>
 #include "PhysicsObject.h"
 
@@ -19,6 +19,12 @@ protected:
 	void DrawBoxObject(PhysicsObject* _box, Color _color);
 
 protected:
-	std::map<PhysicsObject*, Color> mObjects;
+	struct ObjPair
+	{
+		PhysicsObject* object = nullptr;
+		Color color = WHITE;
+	};
+
+	std::vector<ObjPair> mObjects;
 };
 

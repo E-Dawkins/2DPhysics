@@ -6,19 +6,23 @@
 
 void App::Update(const float _deltaSeconds)
 {
-	for (auto obj : mObjects)
+	for (auto pair : mObjects)
 	{
-		obj.first->Update(_deltaSeconds);
+		pair.object->Update(_deltaSeconds);
+	}
 
-		for (auto obj2 : mObjects)
+	// Check every object against every other object, except itself
+	for (int outer = 0; outer < (int)mObjects.size() - 1; outer++)
+	{
+		for (int inner = outer + 1; inner < (int)mObjects.size(); inner++)
 		{
-			if (obj.first != obj2.first)
+			PhysicsObject* object1 = mObjects[outer].object;
+			PhysicsObject* object2 = mObjects[inner].object;
+
+			CollisionInfo collInfo = {};
+			if (object1->CheckCollision(object2, collInfo))
 			{
-				CollisionInfo collInfo = {};
-				if (obj.first->CheckCollision(obj2.first, collInfo))
-				{
-					// TODO
-				}
+				// TODO
 			}
 		}
 	}
@@ -26,13 +30,13 @@ void App::Update(const float _deltaSeconds)
 
 void App::Draw()
 {
-	for (auto obj : mObjects)
+	for (auto pair : mObjects)
 	{
-		switch (obj.first->GetColliderType())
+		switch (pair.object->GetColliderType())
 		{
-			case CIRCLE: DrawCircleObject(obj.first, obj.second); break;
-			case PLANE: DrawPlaneObject(obj.first, obj.second); break;
-			case BOX: DrawBoxObject(obj.first, obj.second); break;
+			case CIRCLE: DrawCircleObject(pair.object, pair.color); break;
+			case PLANE: DrawPlaneObject(pair.object, pair.color); break;
+			case BOX: DrawBoxObject(pair.object, pair.color); break;
 
 			default: {} break;
 		}
@@ -41,7 +45,7 @@ void App::Draw()
 
 void App::AddObject(PhysicsObject* _obj, Color _color)
 {
-	mObjects.insert({ _obj, _color });
+	mObjects.push_back({ _obj, _color });
 }
 
 Vector2 App::ConvertVector2D(Vector2D _vec)
