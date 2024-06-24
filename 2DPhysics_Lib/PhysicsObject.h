@@ -46,24 +46,32 @@ public:
 	const Vector2D GetVelocity() const				{ return mVelocity; }
 	const Vector2D GetLocalRight() const			{ return mLocalRight; }
 	const Vector2D GetLocalUp() const				{ return mLocalUp; }
+	const Vector2D GetLocalGravity() const			{ return mLocalGravity; }
 	const float GetMass() const						{ return mKinematic ? FLT_MAX : mMass; }
 	const float GetRotation() const					{ return mRotation; }
 	const float GetRotationDegrees() const			{ return P2D_Maths::Rad2Deg(mRotation); }
 	const float GetElasticity() const				{ return mElasticity; }
 	const float GetMoment() const					{ return mKinematic ? FLT_MAX : mMoment; }
 	const float GetAngularVelocity() const			{ return mAngularVelocity; }
+	const float GetLinearDrag() const				{ return mLinearDrag; }
+	const float GetAngularDrag() const				{ return mAngularDrag; }
 	const bool IsKinematic() const					{ return mKinematic; }
+	const bool IsUsingGravity() const				{ return mUseGravity; }
 	const ColliderType GetColliderType() const		{ return mColliderType; }
 
 	// Setters
 	void SetPosition(const Vector2D _position)				{ mPosition = _position; }
 	void SetVelocity(const Vector2D _velocity)				{ mVelocity = _velocity; }
+	void SetLocalGravity(const Vector2D _localGravity)		{ mLocalGravity = _localGravity; }
 	void SetMass(const float _mass)							{ mMass = _mass; }
 	void SetRotationDegrees(const float _rotation);
 	void SetElasticity(const float _elasticity)				{ mElasticity = _elasticity; }
 	void SetMoment(const float _moment)						{ mMoment = _moment; }
 	void SetAngularVelocity(const float _angularVelocity)	{ mAngularVelocity = _angularVelocity; }
+	void SetLinearDrag(const float _linearDrag)				{ mLinearDrag = _linearDrag; }
+	void SetAngularDrag(const float _angularDrag)			{ mAngularDrag = _angularDrag; }
 	void SetKinematic(const bool _kinematic)				{ mKinematic = _kinematic; }
+	void SetUseGravity(const bool _useGravity)				{ mUseGravity = _useGravity; }
 
 protected:
 	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
@@ -92,6 +100,7 @@ protected:
 	Vector2D mVelocity;
 	Vector2D mLocalRight;
 	Vector2D mLocalUp;
+	Vector2D mLocalGravity;
 
 	float mMass;
 	float mRotation;
@@ -99,7 +108,10 @@ protected:
 	float mElasticity;
 	float mAngularVelocity;
 	float mMoment;
+	float mLinearDrag;
+	float mAngularDrag;
 	
 	bool mKinematic;
+	bool mUseGravity;
 };
 

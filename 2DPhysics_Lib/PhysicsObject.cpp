@@ -9,12 +9,16 @@
 PhysicsObject::PhysicsObject()
 	: mPosition(0, 0)
 	, mVelocity(0, 0)
+	, mLocalGravity(0, 0)
 	, mMass(1.f)
 	, mElasticity(1.f)
 	, mAngularVelocity(0.f)
 	, mMoment(0.f)
+	, mLinearDrag(0.3f)
+	, mAngularDrag(0.3f)
 	, mColliderType(UNKNOWN)
 	, mKinematic(false)
+	, mUseGravity(false)
 {
 	SetRotationDegrees(0.f);
 	UpdateLocalAxes();
@@ -24,12 +28,16 @@ PhysicsObject::PhysicsObject()
 PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
 	: mPosition(_position)
 	, mVelocity(0, 0)
+	, mLocalGravity(0, 0)
 	, mMass(_mass)
 	, mElasticity(1.f)
 	, mAngularVelocity(0.f)
 	, mMoment(0.f)
+	, mLinearDrag(0.3f)
+	, mAngularDrag(0.3f)
 	, mColliderType(UNKNOWN)
 	, mKinematic(false)
+	, mUseGravity(false)
 {
 	SetRotationDegrees(_rotation);
 	UpdateLocalAxes();
@@ -42,11 +50,27 @@ void PhysicsObject::Update(float _deltaSeconds)
 	if (mLastRotation != mRotation)
 	{
 		UpdateLocalAxes();
+		mLastRotation = mRotation;
 	}
 
-	mLastRotation = mRotation;
+	if (mKinematic)
+	{
+		mVelocity = Vector2D(0, 0);
+		mAngularVelocity = 0.f;
+
+		return;
+	}
+
+	mVelocity -= mVelocity * mLinearDrag * _deltaSeconds;
+	mAngularVelocity -= mAngularVelocity * mAngularDrag * _deltaSeconds;
 
 	mPosition += mVelocity * _deltaSeconds;
+
+	if (mUseGravity)
+	{
+		ApplyForce(mLocalGravity * GetMass() * _deltaSeconds);
+	}
+
 	mRotation += mAngularVelocity * _deltaSeconds;
 }
 
@@ -76,13 +100,13 @@ void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 	Vector2D lA = mVelocity;
 	Vector2D lB = _otherObject->mVelocity;
 
-	float elasticity = mElasticity * _otherObject->mElasticity;
-	float eTerm = -(1.f + elasticity);
+	float elasticity = (mElasticity + _otherObject->mElasticity) * 0.5f; // Average elasticity
+	float eTerm = -(elasticity);
 
 	for (Vector2D& pt : _collisionInfo.collisionPoints)
 	{
 		// Impulse magnitude along normal
-		//                    -(1+e)((vB - vA) * n)
+		//                      -e((vB - vA) * n)
 		// jn = -------------------------------------------------
 		//       1/mA + 1/mB + ((rA X n)^2)/iA + ((rB X n)^2)/iB
 
@@ -208,12 +232,14 @@ bool PhysicsObject::Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, 
 	// and moving towards plane's surface
 	if (distFromSurface <= circle->GetRadius() && velDirection < 0.f)
 	{
+		// Use a referece point on the plane to determine if circle is within plane bounds
 		Vector2D pointOnPlane = P2D_Maths::ProjectPointOnPlane(circle->mPosition, plane->mPosition, plane->GetNormal());
 		float distFromCenter = Vector2D::Distance(plane->mPosition, pointOnPlane) - circle->GetRadius();
 
 		if (distFromCenter <= plane->GetHalfExtent())
 		{
-			_collisionInfo.collisionPoints.push_back(pointOnPlane);
+			// Use the actual point on the circles' surface for collision resolution
+			_collisionInfo.collisionPoints.push_back(circle->GetPosition() + (plane->GetNormal() * -circle->GetRadius()));
 			plane->ResolveCollision(circle, _collisionInfo);
 
 			return true;
