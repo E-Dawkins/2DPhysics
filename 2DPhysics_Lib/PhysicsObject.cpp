@@ -44,6 +44,8 @@ void PhysicsObject::Update(float _deltaSeconds)
 		UpdateLocalAxes();
 	}
 
+	mLastRotation = mRotation;
+
 	mPosition += mVelocity * _deltaSeconds;
 	mRotation += mAngularVelocity * _deltaSeconds;
 }
@@ -142,7 +144,7 @@ void PhysicsObject::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 void PhysicsObject::ApplyForce(Vector2D _force, const Vector2D _contact)
 {
 	mVelocity += _force / GetMass();
-	mAngularVelocity += Vector2D::Cross(_force, _contact) / GetMoment();
+	mAngularVelocity += Vector2D::Cross(_contact, _force) / GetMoment();
 }
 
 void PhysicsObject::ApplyContactForces(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo)
@@ -165,10 +167,11 @@ void PhysicsObject::SetRotationDegrees(const float _rotation)
 
 void PhysicsObject::UpdateLocalAxes()
 {
-	mLastRotation = mRotation;
+	float sn = sinf(mRotation);
+	float cs = cosf(mRotation);
 
-	mLocalUp = Vector2D::AngleToUnitVector(P2D_Maths::Rad2Deg(mRotation));
-	mLocalRight = Vector2D::PerpendicularVector(mLocalUp).Normalize();
+	mLocalRight = Vector2D(cs, sn);
+	mLocalUp = Vector2D(-sn, cs);
 }
 
 void PhysicsObject::RegisterCollisionChecks()

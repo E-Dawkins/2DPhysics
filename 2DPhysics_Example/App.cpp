@@ -78,8 +78,8 @@ void App::DrawPlaneObject(PhysicsObject* _plane, Color _color)
 	Rectangle rect = { pos.X, pos.Y, 0.2f, halfExtent * 2.f };
 	Rectangle rect2 = { pos.X, pos.Y, 0.2f, 1.f };
 
-	DrawRectanglePro(rect2, { rect2.width / 2, 0 }, -plane->GetRotationDegrees(), BLACK);
-	DrawRectanglePro(rect, { rect.width / 2, rect.height / 2 }, -plane->GetRotationDegrees() + 90.f, _color);
+	DrawRectanglePro(rect2, { rect2.width / 2, 0 }, plane->GetRotationDegrees(), BLACK);
+	DrawRectanglePro(rect, { rect.width / 2, rect.height / 2 }, plane->GetRotationDegrees() + 90.f, _color);
 }
 
 void App::DrawBoxObject(PhysicsObject* _box, Color _color)

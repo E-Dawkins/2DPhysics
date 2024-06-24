@@ -52,7 +52,7 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    app = new App_Box2Box();
+    app = new App_Box2Plane();
     app->Startup();
 }
 
