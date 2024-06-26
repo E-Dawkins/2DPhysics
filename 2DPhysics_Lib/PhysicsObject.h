@@ -14,21 +14,22 @@ enum PHYSICS_API ColliderType
 	COLLIDER_TYPE_MAX
 };
 
-#pragma warning (disable : 4251) // disables a warning on the std::vector in CollisionInfo
-
 struct PHYSICS_API CollisionInfo
 {
 	CollisionInfo()
 	{
-		collisionPoints = {};
+		contactPoint = Vector2D(0, 0);
 		penetration = FLT_MAX;
 		normal = Vector2D(0, 0);
 	}
 
-	std::vector<Vector2D> collisionPoints;
+	Vector2D contactPoint;
 	float penetration;
 	Vector2D normal;
 };
+
+const float MIN_LINEAR_THRESHOLD = 0.1f;
+const float MIN_ANGULAR_THRESHOLD = 0.01f;
 
 class PHYSICS_API PhysicsObject
 {
@@ -47,11 +48,11 @@ public:
 	const Vector2D GetLocalRight() const			{ return mLocalRight; }
 	const Vector2D GetLocalUp() const				{ return mLocalUp; }
 	const Vector2D GetLocalGravity() const			{ return mLocalGravity; }
-	const float GetMass() const						{ return mKinematic ? FLT_MAX : mMass; }
+	const float GetMass() const						{ return mKinematic ? INT_MAX : mMass; }
 	const float GetRotation() const					{ return mRotation; }
 	const float GetRotationDegrees() const			{ return P2D_Maths::Rad2Deg(mRotation); }
 	const float GetElasticity() const				{ return mElasticity; }
-	const float GetMoment() const					{ return mKinematic ? FLT_MAX : mMoment; }
+	const float GetMoment() const					{ return mKinematic ? INT_MAX : mMoment; }
 	const float GetAngularVelocity() const			{ return mAngularVelocity; }
 	const float GetLinearDrag() const				{ return mLinearDrag; }
 	const float GetAngularDrag() const				{ return mAngularDrag; }

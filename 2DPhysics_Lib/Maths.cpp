@@ -23,8 +23,8 @@ Vector2D P2D_Maths::ClosestPointOnBox(Vector2D _point, Vector2D _boxCenter, Vect
 {
 	Vector2D boxToPt = _point - _boxCenter;
 
-	float dotAlongRight = Clamp(-1, 1, Vector2D::Dot(_boxRight, boxToPt));
-	float dotAlongUp = Clamp(-1, 1, Vector2D::Dot(_boxUp, boxToPt));
+	float dotAlongRight = Clamp(-1, 1, Vector2D::Dot(_boxRight, boxToPt) / _boxHalfExtents.X);
+	float dotAlongUp = Clamp(-1, 1, Vector2D::Dot(_boxUp, boxToPt) / _boxHalfExtents.Y);
 
 	Vector2D upOffset = _boxUp * (dotAlongUp * _boxHalfExtents.Y);
 	Vector2D rightOffset = _boxRight * (dotAlongRight * _boxHalfExtents.X);

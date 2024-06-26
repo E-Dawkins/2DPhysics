@@ -26,7 +26,7 @@ void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
 {
     // The position at which we will apply the force
     // relative to the object's center of mass
-    Vector2D localContact = _collisionInfo.collisionPoints[0] - _otherObject->GetPosition();
+    Vector2D localContact = _collisionInfo.contactPoint - _otherObject->GetPosition();
 
     // The plane has no velocity, so the relative velocity
     // is just the other object's velocity at contact point
@@ -53,7 +53,7 @@ void PlaneCollider::ResolveCollision(PhysicsObject* _otherObject, CollisionInfo&
     // The penetration is simply the dot product of the contact point and the planes' normal then
     // subtracting the distance from the world origin, i.e. the dot product of the position and the normal.
     _collisionInfo.normal = mLocalUp;
-    _collisionInfo.penetration = -(Vector2D::Dot(_collisionInfo.collisionPoints[0], mLocalUp) - Vector2D::Dot(mPosition, mLocalUp));
+    _collisionInfo.penetration = -(Vector2D::Dot(_collisionInfo.contactPoint, mLocalUp) - Vector2D::Dot(mPosition, mLocalUp));
     if (_collisionInfo.penetration > 0.f)
     {
         ApplyContactForces(_otherObject, _collisionInfo);
