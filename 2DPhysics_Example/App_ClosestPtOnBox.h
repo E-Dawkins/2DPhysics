@@ -14,7 +14,7 @@ protected:
 public:
 	virtual void Startup() override
 	{
-		box = new BoxCollider({ 0, 0 }, 1, { 1, 1 });
+		box = new BoxCollider({ 0, 0 }, 1, { 2, 3 });
 		AddObject(box, ORANGE);
 	}
 
@@ -25,8 +25,11 @@ public:
 		static float time = 0.f;
 		time += _deltaSeconds;
 
-		pt = Vector2D(std::sinf(time), std::cosf(time)) * 3.f;
+		static float maxLength = std::max(box->GetHalfExtents().X, box->GetHalfExtents().Y);
+		pt = Vector2D(std::sinf(time) * (maxLength * 2.f), std::cosf(time) * (maxLength * 2.f));
 		projectedPt = P2D_Maths::ClosestPointOnBox(pt, box->GetPosition(), box->GetHalfExtents(), box->GetLocalUp(), box->GetLocalRight());
+
+		box->SetRotationDegrees(time * 30.f);
 	}
 
 	virtual void Draw()

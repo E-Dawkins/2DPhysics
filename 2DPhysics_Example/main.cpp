@@ -54,7 +54,7 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    app = new App_AllPhysicsObjs();
+    app = new App_ProjectPtOnPlane();
     app->Startup();
 }
 
