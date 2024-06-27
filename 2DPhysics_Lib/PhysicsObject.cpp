@@ -5,6 +5,7 @@
 #include "BoxCollider.h"
 
 #include "Maths.h"
+#include "PhysicsManager.h"
 
 PhysicsObject::PhysicsObject()
 	: mPosition(0, 0)
@@ -23,6 +24,8 @@ PhysicsObject::PhysicsObject()
 	SetRotationDegrees(0.f);
 	UpdateLocalAxes();
 	RegisterCollisionChecks();
+
+	PhysicsManager::GetInstance().RegisterObject(this);
 }
 
 PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
@@ -42,6 +45,8 @@ PhysicsObject::PhysicsObject(Vector2D _position, float _mass, float _rotation)
 	SetRotationDegrees(_rotation);
 	UpdateLocalAxes();
 	RegisterCollisionChecks();
+
+	PhysicsManager::GetInstance().RegisterObject(this);
 }
 
 void PhysicsObject::Update(float _deltaSeconds)
