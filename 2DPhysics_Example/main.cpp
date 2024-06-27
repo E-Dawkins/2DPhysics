@@ -40,6 +40,8 @@ int main()
         Draw();
     }
 
+    PhysicsManager::GetInstance().Quit();
+
     CloseWindow();
     
     return 0;
@@ -54,7 +56,7 @@ void Begin()
 
     target = LoadRenderTexture(SCREEN_W, SCREEN_H);
 
-    app = new App_ProjectPtOnPlane();
+    app = new App_AllPhysicsObjs();
     app->Startup();
 }
 

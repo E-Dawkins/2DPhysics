@@ -14,8 +14,9 @@ protected:
 public:
 	virtual void Startup() override
 	{
+		App::Startup();
+
 		box = new BoxCollider({ 0, 0 }, 1, { 2, 3 });
-		AddObject(box, ORANGE);
 	}
 
 	virtual void Update(const float _deltaSeconds)

@@ -4,48 +4,30 @@
 #include "PlaneCollider.h"
 #include "BoxCollider.h"
 
+void App::Startup()
+{
+	PhysicsManager::GetInstance().SetTickRate(1000);
+	PhysicsManager::GetInstance().Init();
+}
+
 void App::Update(const float _deltaSeconds)
 {
-	for (auto pair : mObjects)
-	{
-		pair.object->Update(_deltaSeconds);
-	}
-
-	// Check every object against every other object, except itself
-	for (int outer = 0; outer < (int)mObjects.size() - 1; outer++)
-	{
-		for (int inner = outer + 1; inner < (int)mObjects.size(); inner++)
-		{
-			PhysicsObject* object1 = mObjects[outer].object;
-			PhysicsObject* object2 = mObjects[inner].object;
-
-			CollisionInfo collInfo = {};
-			if (object1->CheckCollision(object2, collInfo))
-			{
-				// TODO
-			}
-		}
-	}
+	
 }
 
 void App::Draw()
 {
-	for (auto pair : mObjects)
+	for (PhysicsObject* obj : PhysicsManager::GetInstance().GetAllObjects())
 	{
-		switch (pair.object->GetColliderType())
+		switch (obj->GetColliderType())
 		{
-			case CIRCLE: DrawCircleObject(pair.object, pair.color); break;
-			case PLANE: DrawPlaneObject(pair.object, pair.color); break;
-			case BOX: DrawBoxObject(pair.object, pair.color); break;
+			case CIRCLE: DrawCircleObject(obj, BLUE); break;
+			case PLANE: DrawPlaneObject(obj, YELLOW); break;
+			case BOX: DrawBoxObject(obj, RED); break;
 
 			default: {} break;
 		}
 	}
-}
-
-void App::AddObject(PhysicsObject* _obj, Color _color)
-{
-	mObjects.push_back({ _obj, _color });
 }
 
 Vector2 App::ConvertVector2D(Vector2D _vec)

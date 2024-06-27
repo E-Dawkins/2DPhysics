@@ -14,9 +14,9 @@ protected:
 public:
 	virtual void Startup() override
 	{
-		plane = new PlaneCollider({ 0, 0 }, 0, 5, 30);
+		App::Startup();
 
-		AddObject(plane, YELLOW);
+		plane = new PlaneCollider({ 0, 0 }, 0, 5, 30);
 	}
 
 	virtual void Update(const float _deltaSeconds)

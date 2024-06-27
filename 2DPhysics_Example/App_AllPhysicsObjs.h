@@ -13,6 +13,8 @@ protected:
 public:
 	virtual void Startup() override
 	{
+		App::Startup();
+
 		PlaneCollider* plane1 = new PlaneCollider({  10, -5 }, 0, 12,  25);
 		PlaneCollider* plane2 = new PlaneCollider({ -10, -5 }, 0, 12, -25);
 
@@ -43,27 +45,15 @@ public:
 
 		CircleCollider* circle1 = new CircleCollider({ -6, 5 }, 1, 2);
 
-		AddObject(plane1, YELLOW);
-		AddObject(plane2, YELLOW);
-		AddObject(peg1, BLUE);
-		AddObject(peg2, BLUE);
-		AddObject(peg3, BLUE);
-		AddObject(peg4, BLUE);
-		AddObject(peg5, BLUE);
-		AddObject(box1, RED);
-		AddObject(box2, RED);
-		AddObject(box3, RED);
-		AddObject(circle1, RED);
-
-		for (auto& objPair : mObjects)
+		for (auto& obj : PhysicsManager::GetInstance().GetAllObjects())
 		{
-			if (!objPair.object->IsKinematic())
+			if (!obj->IsKinematic())
 			{
-				objPair.object->SetUseGravity(true);
-				objPair.object->SetLocalGravity({ 0, -9.8f });
-				objPair.object->SetElasticity(0.3f);
-				objPair.object->SetLinearDrag(0.8f);
-				objPair.object->SetAngularDrag(0.8f);
+				obj->SetUseGravity(true);
+				obj->SetLocalGravity({ 0, -9.8f });
+				obj->SetElasticity(0.3f);
+				obj->SetLinearDrag(0.8f);
+				obj->SetAngularDrag(0.8f);
 			}
 		}
 	}
