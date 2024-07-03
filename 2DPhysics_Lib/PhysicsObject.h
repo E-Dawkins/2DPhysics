@@ -38,8 +38,8 @@ public:
 	PhysicsObject(Vector2D _position, float _mass, float _rotation = 0.f);
 
 	void Update(float _deltaSeconds);
-	bool CheckCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
+	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 	void ApplyForce(Vector2D _force, const Vector2D _contact = Vector2D(0, 0));
 
 	// Getters
@@ -75,26 +75,11 @@ public:
 	void SetUseGravity(const bool _useGravity)				{ mUseGravity = _useGravity; }
 
 protected:
-	virtual void ResolveCollision(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 	void ApplyContactForces(PhysicsObject* _otherObject, CollisionInfo& _collisionInfo);
 
 	void UpdateLocalAxes();
-	void RegisterCollisionChecks();
-
-	bool Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo);
-	bool Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
-	bool Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
-	bool Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
-	bool Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circle2, CollisionInfo& _collisionInfo);
-	bool Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
-	bool Plane2Box(PhysicsObject* _plane, PhysicsObject* _box, CollisionInfo& _collisionInfo);
-	bool Circle2Box(PhysicsObject* _circle, PhysicsObject* _box, CollisionInfo& _collisionInfo);
-	bool Box2Box(PhysicsObject* _box1, PhysicsObject* _box2, CollisionInfo& _collisionInfo);
 
 protected:
-	typedef bool (PhysicsObject::* CollisionCheck)(PhysicsObject*, PhysicsObject*, CollisionInfo&);
-	std::array<CollisionCheck, COLLIDER_TYPE_MAX * COLLIDER_TYPE_MAX> mCollisionChecks;
-
 	ColliderType mColliderType;
 
 	Vector2D mPosition;

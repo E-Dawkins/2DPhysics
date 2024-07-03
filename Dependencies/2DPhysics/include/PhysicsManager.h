@@ -4,7 +4,7 @@
 #include <vector>
 #include <thread>
 
-class PhysicsObject;
+#include "PhysicsObject.h"
 
 class PHYSICS_API PhysicsManager
 {
@@ -46,8 +46,25 @@ private:
 	void UpdateObjs();
 	void CheckCollisions();
 
+	bool CheckCollision(PhysicsObject* _obj1, PhysicsObject* _obj2, CollisionInfo& _collisionInfo);
+	void RegisterCollisionChecks();
+
+	// Collision checks
+	bool Plane2Plane(PhysicsObject* _plane1, PhysicsObject* _plane2, CollisionInfo& _collisionInfo);
+	bool Circle2Plane(PhysicsObject* _circle, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
+	bool Box2Plane(PhysicsObject* _box, PhysicsObject* _plane, CollisionInfo& _collisionInfo);
+	bool Plane2Circle(PhysicsObject* _plane, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
+	bool Circle2Circle(PhysicsObject* _circle1, PhysicsObject* _circle2, CollisionInfo& _collisionInfo);
+	bool Box2Circle(PhysicsObject* _box, PhysicsObject* _circle, CollisionInfo& _collisionInfo);
+	bool Plane2Box(PhysicsObject* _plane, PhysicsObject* _box, CollisionInfo& _collisionInfo);
+	bool Circle2Box(PhysicsObject* _circle, PhysicsObject* _box, CollisionInfo& _collisionInfo);
+	bool Box2Box(PhysicsObject* _box1, PhysicsObject* _box2, CollisionInfo& _collisionInfo);
+
 private:
 	static PhysicsManager* mInstance;
+
+	typedef bool (PhysicsManager::* CollisionCheck)(PhysicsObject*, PhysicsObject*, CollisionInfo&);
+	std::array<CollisionCheck, COLLIDER_TYPE_MAX * COLLIDER_TYPE_MAX> mCollisionChecks;
 
 	std::thread mPhysicsThread;
 
